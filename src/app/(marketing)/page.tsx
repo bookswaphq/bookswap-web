@@ -1,11 +1,11 @@
 import {
   Navbar,
   Hero,
-  //Features,
-  // HowItWorks,
-  // About,
-  // Waitlist,
-  // Footer,
+  Features,
+  HowItWorks,
+  About,
+  Waitlist,
+  Footer,
 } from "@/components/marketing";
 
 export default function MarketingPage() {
@@ -19,11 +19,11 @@ export default function MarketingPage() {
     >
       <Navbar />
       <Hero />
-      {/* <Features />
+      <Features />
       <HowItWorks />
       <About />
       <Waitlist />
-      <Footer /> */}
+      <Footer />
     </main>
   );
 }

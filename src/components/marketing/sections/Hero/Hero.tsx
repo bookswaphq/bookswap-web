@@ -11,20 +11,20 @@ export default function Hero() {
         Now boarding readers
       </span>
 
-      <h1 className="font-display mt-6 text-5xl sm:text-6xl font-medium leading-[1.05] tracking-tight">
+      <h1 className="font-display mt-6 text-5xl sm:text-6xl font-medium leading-[1.05] tracking-tight text-[var(--ink)]">
         Discover books.
         <br />
-        Exchange stories.
+        Exchange with readers.
         <br />
-        Meet readers.
+        Keep stories moving.
       </h1>
 
       <p
         className="mt-6 text-lg max-w-md"
-        style={{ color: "rgba(33,29,22,0.65)" }}
+        style={{ color: "var(--ink-soft)" }}
       >
-        BookSwap turns your shelf into a doorway. List what you&apos;ve
-        finished, find what&apos;s next, and hand it off to someone nearby.
+        BookSwap helps you discover new reads, offer books you&apos;ve finished,
+        and connect with readers to exchange them.
       </p>
 
       <div className="mt-9 flex flex-wrap gap-4 justify-center">
@@ -50,7 +50,7 @@ export default function Hero() {
           style={
             {
               height: "70%",
-              background: "var(--forest)",
+              background: "var(--primary)",
               "--tilt": "-3deg",
             } as React.CSSProperties
           }
@@ -61,7 +61,7 @@ export default function Hero() {
           style={
             {
               height: "95%",
-              background: "var(--oxblood)",
+              background: "var(--ink)",
               "--tilt": "2deg",
             } as React.CSSProperties
           }
@@ -83,7 +83,7 @@ export default function Hero() {
           style={
             {
               height: "100%",
-              background: "var(--ink)",
+              background: "var(--primary-dark)",
               "--tilt": "3deg",
             } as React.CSSProperties
           }
@@ -94,7 +94,7 @@ export default function Hero() {
           style={
             {
               height: "65%",
-              background: "var(--forest-dark)",
+              background: "var(--primary-surface)",
               "--tilt": "-4deg",
             } as React.CSSProperties
           }
@@ -105,7 +105,7 @@ export default function Hero() {
           style={
             {
               height: "85%",
-              background: "var(--oxblood)",
+              background: "var(--primary)",
               "--tilt": "1deg",
             } as React.CSSProperties
           }
@@ -114,5 +114,3 @@ export default function Hero() {
     </section>
   );
 }
-
-
