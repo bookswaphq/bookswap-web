@@ -1,13 +1,94 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-html,
-body {
-  height: 100%;
+:root {
+  --paper: #f3efe2;
+  --paper-card: #fffdf6;
+  --ink: #211d16;
+  --forest: #2f4a3d;
+  --forest-dark: #1f332a;
+  --brass: #a9803f;
+  --oxblood: #8c3b2e;
 }
 
-body {
-  margin: 0;
-  padding: 0;
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.font-display {
+  font-family: "Fraunces", Georgia, serif;
+}
+
+.font-body {
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.font-mono {
+  font-family: "IBM Plex Mono", monospace;
+}
+
+.spine {
+  transform-origin: bottom center;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.spine-group:hover .spine {
+  transform: translateY(-6px) rotate(var(--tilt, 0deg));
+}
+
+.btn-primary {
+  background: var(--forest);
+  color: var(--paper-card);
+}
+
+.btn-primary:hover {
+  background: var(--forest-dark);
+}
+
+.btn-primary:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
+}
+
+.btn-outline {
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
+}
+
+.btn-outline:hover {
+  background: var(--ink);
+  color: var(--paper-card);
+}
+
+.btn-outline:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 3px;
+}
+
+.stitch-line {
+  stroke-dasharray: 2 10;
+  stroke-linecap: round;
+}
+
+.card-lift {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 36px -22px rgba(33, 29, 22, 0.35);
+  border-color: var(--brass);
 }
