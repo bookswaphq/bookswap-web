@@ -6,9 +6,8 @@ const links = [
   { id: "how-it-works", label: "How it works" },
   { id: "features", label: "Features" },
   { id: "about", label: "About" },
-  { id: "support", label: "Contact" },
+  { id: "waitlist", label: "Join" },
 ];
-
 
 export default function Navbar() {
   const [activeSection, setActiveSection] = useState("");
@@ -43,8 +42,9 @@ export default function Navbar() {
       <nav
         className="w-full max-w-3xl flex items-center justify-between gap-6 rounded-full px-6 py-3 backdrop-blur-xl transition-all duration-300"
         style={{
-          background: "rgba(251,249,255,0.85)",
-          border: "1px solid rgba(27,23,32,0.08)",
+          background: "rgba(255,255,255,0.82)",
+          border: "1px solid var(--border)",
+          boxShadow: "0 10px 30px -20px var(--shadow-color)",
         }}
       >
         <a

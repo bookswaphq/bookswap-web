@@ -6,9 +6,9 @@ export default function About() {
     >
       <span
         className="font-mono text-xs tracking-[0.2em] uppercase"
-        style={{ color: "var(--brass)" }}
+        style={{ color: "var(--primary)" }}
       >
-        About
+        About BookSwap
       </span>
 
       <p className="font-display mt-6 text-2xl sm:text-3xl italic leading-snug text-[var(--ink)]">
@@ -20,10 +20,18 @@ export default function About() {
         className="mt-6 text-sm max-w-md"
         style={{ color: "var(--ink-soft)" }}
       >
-        BookSwap is a simple way for readers to exchange books they have
+        BookSwap is a simple way for readers to exchange books they&apos;ve
         finished and discover new ones from other shelves. List your books,
-        connect with readers, make swap offers, and keep stories moving.
+        receive swap offers, chat with readers, and give every story a new
+        journey.
       </p>
+
+      <div
+        className="mt-8 w-16 h-1 rounded-full"
+        style={{
+          background: "var(--primary)",
+        }}
+      />
     </section>
   );
 }

@@ -4,8 +4,9 @@ export default function Hero() {
       <span
         className="font-mono text-xs tracking-[0.2em] uppercase px-3 py-1 rounded-full"
         style={{
-          color: "var(--brass)",
-          border: "1px solid var(--brass)",
+          color: "var(--primary)",
+          background: "var(--primary-soft)",
+          border: "1px solid var(--primary-surface)",
         }}
       >
         Now boarding readers
@@ -24,7 +25,7 @@ export default function Hero() {
         style={{ color: "var(--ink-soft)" }}
       >
         BookSwap helps you discover new reads, offer books you&apos;ve finished,
-        and connect with readers to exchange them.
+        and connect with readers to exchange stories.
       </p>
 
       <div className="mt-9 flex flex-wrap gap-4 justify-center">
@@ -43,72 +44,62 @@ export default function Hero() {
         </a>
       </div>
 
-      {/* Signature illustration */}
+      {/* Signature bookshelf illustration */}
       <div className="spine-group mt-16 flex items-end gap-2 h-36">
         <div
           className="spine w-8 rounded-t-sm"
-          style={
-            {
-              height: "70%",
-              background: "var(--primary)",
-              "--tilt": "-3deg",
-            } as React.CSSProperties
-          }
+          style={{
+            height: "70%",
+            background: "var(--primary)",
+            "--tilt": "-3deg",
+          } as React.CSSProperties}
         />
 
         <div
           className="spine w-8 rounded-t-sm"
-          style={
-            {
-              height: "95%",
-              background: "var(--ink)",
-              "--tilt": "2deg",
-            } as React.CSSProperties
-          }
+          style={{
+            height: "95%",
+            background: "var(--ink)",
+            "--tilt": "2deg",
+          } as React.CSSProperties}
         />
 
         <div
           className="spine w-8 rounded-t-sm"
-          style={
-            {
-              height: "55%",
-              background: "var(--brass)",
-              "--tilt": "-2deg",
-            } as React.CSSProperties
-          }
+          style={{
+            height: "55%",
+            background: "var(--primary-soft)",
+            border: "1px solid var(--border)",
+            "--tilt": "-2deg",
+          } as React.CSSProperties}
         />
 
         <div
           className="spine w-8 rounded-t-sm"
-          style={
-            {
-              height: "100%",
-              background: "var(--primary-dark)",
-              "--tilt": "3deg",
-            } as React.CSSProperties
-          }
+          style={{
+            height: "100%",
+            background: "var(--primary-dark)",
+            "--tilt": "3deg",
+          } as React.CSSProperties}
         />
 
         <div
           className="spine w-8 rounded-t-sm"
-          style={
-            {
-              height: "65%",
-              background: "var(--primary-surface)",
-              "--tilt": "-4deg",
-            } as React.CSSProperties
-          }
+          style={{
+            height: "65%",
+            background: "var(--paper-card)",
+            border: "1px solid var(--border)",
+            "--tilt": "-4deg",
+          } as React.CSSProperties}
         />
 
         <div
           className="spine w-8 rounded-t-sm"
-          style={
-            {
-              height: "85%",
-              background: "var(--primary)",
-              "--tilt": "1deg",
-            } as React.CSSProperties
-          }
+          style={{
+            height: "85%",
+            background: "var(--primary)",
+            "--tilt": "1deg",
+          } as React.CSSProperties}
         />
       </div>
     </section>

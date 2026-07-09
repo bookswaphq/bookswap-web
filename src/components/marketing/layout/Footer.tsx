@@ -4,8 +4,8 @@ export default function Footer() {
       id="support"
       className="w-full px-6 py-12 flex flex-col items-center text-center"
       style={{
-        background: "var(--primary)",
-        color: "rgba(255,255,255,0.7)",
+        background: "var(--ink)",
+        color: "rgba(255,255,255,0.65)",
       }}
     >
       <div className="flex flex-col items-center gap-3">
@@ -24,7 +24,9 @@ export default function Footer() {
         <a
           href="mailto:hello@bookswap.app"
           className="font-mono text-xs tracking-wide transition-opacity hover:opacity-80"
-          style={{ color: "var(--brass)" }}
+          style={{
+            color: "var(--primary-soft)",
+          }}
         >
           hello@bookswap.app
         </a>
@@ -32,7 +34,9 @@ export default function Footer() {
 
       <div
         className="w-full max-w-sm h-px my-8"
-        style={{ background: "rgba(255,255,255,0.15)" }}
+        style={{
+          background: "rgba(255,255,255,0.12)",
+        }}
       />
 
       <div className="flex flex-col sm:flex-row items-center gap-2 text-xs">
