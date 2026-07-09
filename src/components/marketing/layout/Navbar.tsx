@@ -1,11 +1,50 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+const links = [
+  { id: "how-it-works", label: "How it works" },
+  { id: "features", label: "Features" },
+  { id: "about", label: "About" },
+  { id: "support", label: "Contact" },
+];
+
+
 export default function Navbar() {
+  const [activeSection, setActiveSection] = useState("");
+
+  useEffect(() => {
+    const sections = links
+      .map(({ id }) => document.getElementById(id))
+      .filter(Boolean);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.find((entry) => entry.isIntersecting);
+
+        if (visible) {
+          setActiveSection(visible.target.id);
+        }
+      },
+      {
+        threshold: 0.4,
+      }
+    );
+
+    sections.forEach((section) => {
+      if (section) observer.observe(section);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <header className="fixed top-5 z-50 w-full flex justify-center px-4">
       <nav
-        className="w-full max-w-3xl flex items-center justify-between gap-6 rounded-full px-6 py-3 backdrop-blur-md"
+        className="w-full max-w-3xl flex items-center justify-between gap-6 rounded-full px-6 py-3 backdrop-blur-xl transition-all duration-300"
         style={{
-          background: "rgba(243, 239, 226, 0.75)",
-          border: "1px solid rgba(33,29,22,0.1)",
+          background: "rgba(251,249,255,0.85)",
+          border: "1px solid rgba(27,23,32,0.08)",
         }}
       >
         <a
@@ -17,24 +56,25 @@ export default function Navbar() {
         </a>
 
         <div className="hidden md:flex items-center gap-7 text-sm">
-          <a href="#features" className="hover:opacity-70 transition-opacity">
-            Features
-          </a>
+          {links.map((link) => {
+            const active = activeSection === link.id;
 
-          <a href="#about" className="hover:opacity-70 transition-opacity">
-            About
-          </a>
-
-          <a
-            href="#how-it-works"
-            className="hover:opacity-70 transition-opacity"
-          >
-            How it works
-          </a>
-
-          <a href="#support" className="hover:opacity-70 transition-opacity">
-            Contact us
-          </a>
+            return (
+              <a
+                key={link.id}
+                href={`#${link.id}`}
+                className="transition-colors duration-200"
+                style={{
+                  color: active
+                    ? "var(--primary)"
+                    : "var(--ink-soft)",
+                  fontWeight: active ? 600 : 400,
+                }}
+              >
+                {link.label}
+              </a>
+            );
+          })}
         </div>
 
         <a

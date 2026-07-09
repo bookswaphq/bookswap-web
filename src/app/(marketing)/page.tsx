@@ -19,8 +19,8 @@ export default function MarketingPage() {
     >
       <Navbar />
       <Hero />
-      <Features />
       <HowItWorks />
+      <Features />
       <About />
       <Waitlist />
       <Footer />
