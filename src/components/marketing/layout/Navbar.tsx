@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react";
 
 const links = [
+  { id: "showcase", label: "See the app" },
   { id: "how-it-works", label: "How it works" },
   { id: "features", label: "Features" },
   { id: "about", label: "About" },
+  { id: "faq", label: "FAQ" },
   { id: "waitlist", label: "Join" },
 ];
 
@@ -81,7 +83,7 @@ export default function Navbar() {
           href="#waitlist"
           className="btn-primary rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap"
         >
-          Join Waitlist
+          Get Early Access
         </a>
       </nav>
     </header>

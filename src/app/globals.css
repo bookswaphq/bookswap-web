@@ -61,15 +61,15 @@ body {
 /* Typography */
 
 .font-display {
-  font-family: "Fraunces", Georgia, serif;
+  font-family: var(--font-fraunces), Georgia, serif;
 }
 
 .font-body {
-  font-family: "Inter", system-ui, sans-serif;
+  font-family: var(--font-inter), system-ui, sans-serif;
 }
 
 .font-mono {
-  font-family: "IBM Plex Mono", monospace;
+  font-family: var(--font-mono), monospace;
 }
 
 

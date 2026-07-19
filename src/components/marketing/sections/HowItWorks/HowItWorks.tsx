@@ -1,3 +1,8 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
+
 export default function HowItWorks() {
   const steps = [
     {
@@ -18,25 +23,34 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section
+    <motion.section
       id="how-it-works"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewport}
+      variants={staggerContainer(0.1)}
       className="w-full max-w-2xl px-6 py-20 flex flex-col items-center text-center"
     >
-      <span
+      <motion.span
+        variants={fadeUp}
         className="font-mono text-xs tracking-[0.2em] uppercase"
         style={{ color: "var(--primary)" }}
       >
         How the Story Goes
-      </span>
+      </motion.span>
 
-      <h2 className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]">
+      <motion.h2
+        variants={fadeUp}
+        className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]"
+      >
         Three pages, one new book
-      </h2>
+      </motion.h2>
 
       <div className="mt-14 w-full flex flex-col gap-6">
         {steps.map((step) => (
-          <div
+          <motion.div
             key={step.n}
+            variants={fadeUp}
             className="card-lift rounded-2xl flex items-center gap-5 p-5 text-left border"
             style={{
               background: "var(--paper-card)",
@@ -67,9 +81,9 @@ export default function HowItWorks() {
                 {step.copy}
               </p>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 }

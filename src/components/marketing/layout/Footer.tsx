@@ -1,7 +1,16 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { fadeIn, viewport } from "@/lib/motion";
+
 export default function Footer() {
   return (
-    <footer
+    <motion.footer
       id="support"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewport}
+      variants={fadeIn}
       className="w-full px-6 py-12 flex flex-col items-center text-center"
       style={{
         background: "var(--ink)",
@@ -32,6 +41,18 @@ export default function Footer() {
         </a>
       </div>
 
+      <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mt-8 text-xs">
+        <a href="#faq" className="transition-opacity hover:opacity-80">
+          FAQ
+        </a>
+        <a href="#safety" className="transition-opacity hover:opacity-80">
+          Trust &amp; Safety
+        </a>
+        <a href="/engineering" className="transition-opacity hover:opacity-80">
+          Engineering case study
+        </a>
+      </div>
+
       <div
         className="w-full max-w-sm h-px my-8"
         style={{
@@ -48,6 +69,6 @@ export default function Footer() {
 
         <span>Istanbul</span>
       </div>
-    </footer>
+    </motion.footer>
   );
 }

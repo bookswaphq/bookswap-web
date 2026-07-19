@@ -1,7 +1,18 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer } from "@/lib/motion";
+
 export default function Hero() {
   return (
-    <section className="w-full max-w-2xl flex flex-col items-center text-center px-6 pt-40 pb-20">
-      <span
+    <motion.section
+      initial="hidden"
+      animate="visible"
+      variants={staggerContainer(0.12, 0.1)}
+      className="w-full max-w-2xl flex flex-col items-center text-center px-6 pt-40 pb-20"
+    >
+      <motion.span
+        variants={fadeUp}
         className="font-mono text-xs tracking-[0.2em] uppercase px-3 py-1 rounded-full"
         style={{
           color: "var(--primary)",
@@ -10,42 +21,45 @@ export default function Hero() {
         }}
       >
         Now boarding readers
-      </span>
+      </motion.span>
 
-      <h1 className="font-display mt-6 text-5xl sm:text-6xl font-medium leading-[1.05] tracking-tight text-[var(--ink)]">
+      <motion.h1
+        variants={fadeUp}
+        className="font-display mt-6 text-5xl sm:text-6xl font-medium leading-[1.05] tracking-tight text-[var(--ink)]"
+      >
         Discover books.
         <br />
         Exchange with readers.
         <br />
         Keep stories moving.
-      </h1>
+      </motion.h1>
 
-      <p
+      <motion.p
+        variants={fadeUp}
         className="mt-6 text-lg max-w-md"
         style={{ color: "var(--ink-soft)" }}
       >
         BookSwap helps you discover new reads, offer books you&apos;ve finished,
         and connect with readers to exchange stories.
-      </p>
+      </motion.p>
 
-      <div className="mt-9 flex flex-wrap gap-4 justify-center">
+      <motion.div
+        variants={fadeUp}
+        className="mt-9 flex flex-wrap gap-4 justify-center"
+      >
         <a
           href="#waitlist"
           className="btn-primary rounded-xl px-6 py-3 font-medium"
         >
-          Join Waitlist
+          Get Early Access
         </a>
-
-        <a
-          href="/engineering"
-          className="btn-outline rounded-xl px-6 py-3 font-medium"
-        >
-          View Engineering
-        </a>
-      </div>
+      </motion.div>
 
       {/* Signature bookshelf illustration */}
-      <div className="spine-group mt-16 flex items-end gap-2 h-36">
+      <motion.div
+        variants={fadeUp}
+        className="spine-group mt-16 flex items-end gap-2 h-36"
+      >
         <div
           className="spine w-8 rounded-t-sm"
           style={{
@@ -101,7 +115,7 @@ export default function Hero() {
             "--tilt": "1deg",
           } as React.CSSProperties}
         />
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 }

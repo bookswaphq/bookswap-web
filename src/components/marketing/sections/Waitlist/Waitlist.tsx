@@ -1,36 +1,46 @@
+"use client";
+
+import { motion } from "framer-motion";
+import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
 import WaitlistForm from "./WaitlistForm";
 
 export default function Waitlist() {
   return (
-    <section
+    <motion.section
       id="waitlist"
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewport}
+      variants={staggerContainer(0.1)}
       className="w-full max-w-xl px-6 py-24 flex flex-col items-center text-center"
     >
-      <span
+      <motion.span
+        variants={fadeUp}
         className="font-mono text-xs tracking-[0.2em] uppercase"
         style={{ color: "var(--primary)" }}
       >
         Early readers
-      </span>
+      </motion.span>
 
-      <h2 className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]">
+      <motion.h2
+        variants={fadeUp}
+        className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]"
+      >
         Save your spot on the shelf
-      </h2>
+      </motion.h2>
 
-      <p
+      <motion.p
+        variants={fadeUp}
         className="mt-3 text-sm max-w-sm"
         style={{ color: "var(--ink-soft)" }}
       >
-        BookSwap is coming soon. Join the waitlist to be among the first
-        readers to discover, exchange, and share books.
-      </p>
+        We&apos;re opening BookSwap to a small group of readers first, so
+        every early swap actually works. Get on the list to be one of them.
+      </motion.p>
 
-      <div
-        className="mt-1 w-full rounded-3xl p-6"
-
-      >
+      <motion.div variants={fadeUp} className="mt-1 w-full rounded-3xl p-6">
         <WaitlistForm />
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   );
 }
