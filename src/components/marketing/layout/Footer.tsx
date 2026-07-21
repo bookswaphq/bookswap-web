@@ -45,11 +45,21 @@ export default function Footer() {
         <a href="#faq" className="transition-opacity hover:opacity-80">
           FAQ
         </a>
+
         <a href="#safety" className="transition-opacity hover:opacity-80">
           Trust &amp; Safety
         </a>
+
+        <a href="/privacy" className="transition-opacity hover:opacity-80">
+          Privacy Policy
+        </a>
+
+        {/* <a href="/terms" className="transition-opacity hover:opacity-80">
+          Terms of Service
+        </a> */}
+
         <a href="/engineering" className="transition-opacity hover:opacity-80">
-          Engineering case study
+          Engineering
         </a>
       </div>
 
