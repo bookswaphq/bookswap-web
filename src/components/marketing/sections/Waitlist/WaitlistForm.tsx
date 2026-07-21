@@ -1,15 +1,29 @@
 "use client";
 
+// TODO: replace Gmail compose redirect with a proper waitlist API / service
+const WAITLIST_EMAIL = "zeynep.bookswap@gmail.com";
+
 export default function WaitlistForm() {
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     const form = e.currentTarget;
     const data = new FormData(form);
+    const email = (data.get("email") as string)?.trim();
 
-    console.log(data.get("email"));
+    if (!email) return;
 
-    // TODO: connect API / waitlist service
+    const subject = encodeURIComponent("BookSwap waitlist signup");
+    const body = encodeURIComponent(
+      `Hi BookSwap team,\n\nI'd like to join the waitlist.\n\nEmail: ${email}\n`
+    );
+
+    const gmailUrl =
+      `https://mail.google.com/mail/?view=cm&fs=1` +
+      `&to=${encodeURIComponent(WAITLIST_EMAIL)}` +
+      `&su=${subject}&body=${body}`;
+
+    window.open(gmailUrl, "_blank", "noopener,noreferrer");
   }
 
   return (
