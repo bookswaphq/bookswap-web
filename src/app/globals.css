@@ -132,14 +132,14 @@ body {
 /* Book spine animation */
 
 .spine {
-  transform-origin: bottom center;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform .25s ease;
 }
 
-.spine-group:hover .spine {
-  transform: translateY(-6px) rotate(var(--tilt, 0deg));
+.spine:hover {
+  transform:
+      translateY(-6px)
+      rotate(var(--tilt));
 }
-
 
 /* Selection */
 
