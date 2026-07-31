@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Fraunces, Inter, IBM_Plex_Mono } from "next/font/google";
 import { siteConfig } from "@/lib/site";
+import { Analytics } from '@vercel/analytics/react';
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -82,7 +83,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-white text-black antialiased">
         {children}
-
+<Analytics />
         <script
           type="application/ld+json"
           // eslint-disable-next-line react/no-danger
