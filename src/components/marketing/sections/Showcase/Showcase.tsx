@@ -58,7 +58,7 @@ export default function Showcase() {
       whileInView="visible"
       viewport={viewport}
       variants={staggerContainer(0.1)}
-      className="w-full max-w-4xl px-6 py-20 flex flex-col items-center text-center"
+      className="w-full max-w-4xl px-4 sm:px-6 py-16 sm:py-20 flex flex-col items-center text-center"
     >
       {/* Header */}
       <motion.span
@@ -84,7 +84,7 @@ export default function Showcase() {
       </motion.p>
 
       {/* Grid - Cut Effect Layer Kartlar */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-14 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 sm:mt-14 w-full">
         {features.map((feature, idx) => (
           <motion.div
             key={feature.id}
@@ -97,12 +97,12 @@ export default function Showcase() {
               overflow-hidden
               rounded-2xl
               p-6
-              pt-8
+              pt-7
               pb-0
-              flex flex-col items-center justify-between gap-4
+              flex flex-col items-center
               text-center
               shadow-[0_8px_30px_rgb(0,0,0,0.04)]
-              h-[400px] sm:h-[420px]
+              h-[420px] sm:h-[430px]
             "
             style={{
               background: "var(--paper-card, #ffffff)",
@@ -114,13 +114,13 @@ export default function Showcase() {
                 {feature.title}
               </h3>
 
-              <p className="mt-2 text-sm leading-relaxed text-[var(--ink-soft)]">
+              <p className="mt-2 text-xs sm:text-sm leading-relaxed text-[var(--ink-soft)]">
                 {feature.description}
               </p>
             </div>
 
-            {/* Görsel Alanı - Cut-out / Taşma Efekti (Metinden Tamamen Ayrıştırıldı) */}
-            <div className="relative z-10 w-full flex-1 flex items-end justify-center overflow-hidden pt-4">
+            {/* Görsel Alanı - Dengeli Gap ve Taşma Değerleri */}
+            <div className="relative z-10 w-full flex-1 flex items-end justify-center overflow-hidden pt-4 mt-2">
               {feature.secondarySrc && feature.primarySrc ? (
                 /* Çift Ekranlı Cut Effect */
                 <div className="relative w-full max-w-[280px] h-full flex items-end justify-center">
@@ -128,9 +128,9 @@ export default function Showcase() {
                   <div
                     className="
                       absolute
-                      left-1 sm:left-2
-                      bottom-[-70px]
-                      w-[160px]
+                      left-2 sm:left-4
+                      bottom-[-50px] sm:bottom-[-40px]
+                      w-[145px] sm:w-[155px]
                       z-20
                       shadow-xl
                       transition-transform
@@ -148,9 +148,9 @@ export default function Showcase() {
                   <div
                     className="
                       absolute
-                      right-1 sm:right-2
-                      bottom-[-100px]
-                      w-[155px]
+                      right-2 sm:right-4
+                      bottom-[-80px] sm:bottom-[-70px]
+                      w-[140px] sm:w-[150px]
                       z-10
                       opacity-80
                       transition-transform
@@ -168,12 +168,12 @@ export default function Showcase() {
                 /* Tek Ekranlı Cut Effect */
                 <div
                   className="
-                    w-[175px]
-                    translate-y-20
+                    w-[165px] sm:w-[175px]
+                    translate-y-14 sm:translate-y-16
                     transition-transform
                     duration-300
                     ease-out
-                    group-hover:translate-y-16
+                    group-hover:translate-y-12 sm:group-hover:translate-y-14
                   "
                 >
                   <PhoneFrame

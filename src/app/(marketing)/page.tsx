@@ -10,6 +10,7 @@ import {
   Waitlist,
   Footer,
 } from "@/components/marketing";
+import { Analytics } from "@vercel/analytics/react";
 
 export default function MarketingPage() {
   return (
