@@ -1,37 +1,54 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
 import PhoneFrame from "@/components/ui/PhoneFrame";
 
-const screens = [
+interface Feature {
+  id: string;
+  title: string;
+  description: string;
+  alt: string;
+  src?: string;
+  primarySrc?: string;
+  secondarySrc?: string;
+}
+
+const features: Feature[] = [
   {
-    src: "/screenshots/discover.png",
-    alt: "BookSwap discover feed with recently added and most popular books",
+    id: "scan",
+    title: "Instant Barcode Scan",
+    description:
+      "Scan any book's barcode to add it to your shelf in seconds—no manual entry needed.",
+    src: "/screenshots/barcode-scan.png",
+    alt: "Barcode scanning screen showing instant book detail recognition",
   },
   {
-    src: "/screenshots/offer-swap.png",
-    alt: "BookSwap swap proposal screen exchanging one book for another",
+    id: "search",
+    title: "Find Nearby Owners",
+    description:
+      "Search any title and immediately see how many local readers have it ready to swap.",
+    src: "/screenshots/search-owners.png",
+    alt: "Search results screen displaying available book owners nearby",
   },
   {
+    id: "library",
+    title: "Wishlist & Library",
+    description:
+      "Organize your personal shelf and keep a wishlist to automatically trigger swap matches.",
     src: "/screenshots/receive-offer.png",
-    alt: "BookSwap swaps screen with accept and decline actions",
+    alt: "Personal library and wishlist management screen",
   },
   {
-    src: "/screenshots/chat.png",
-    alt: "BookSwap chat screen confirming an agreed swap",
+    id: "chat",
+    title: "Chat & Swap Offers",
+    description:
+      "Send quick exchange requests and coordinate easy handovers via built-in messaging.",
+    primarySrc: "/screenshots/offer-details.png",
+    secondarySrc: "/screenshots/chat.png",
+    alt: "Dual screen layout showing real-time chat and swap offer modal",
   },
 ];
-
-const phoneItem: Variants = {
-  hidden: { opacity: 0, y: 32, scale: 0.96 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
-  },
-};
 
 export default function Showcase() {
   return (
@@ -41,53 +58,9 @@ export default function Showcase() {
       whileInView="visible"
       viewport={viewport}
       variants={staggerContainer(0.1)}
-      className="relative w-full px-6 py-24 flex flex-col items-center text-center overflow-hidden"
+      className="w-full max-w-4xl px-6 py-20 flex flex-col items-center text-center"
     >
-      {/* Decorative background circles */}
-      <div
-        className="pointer-events-none absolute -z-10 rounded-full blur-3xl"
-        style={{
-          width: 480,
-          height: 480,
-          top: -160,
-          right: -140,
-          background: "var(--primary-surface)",
-          opacity: 0.6,
-        }}
-      />
-      <div
-        className="pointer-events-none absolute -z-10 rounded-full blur-3xl"
-        style={{
-          width: 380,
-          height: 380,
-          bottom: -120,
-          left: -120,
-          background: "var(--primary-soft)",
-          opacity: 0.7,
-        }}
-      />
-      <div
-        className="pointer-events-none absolute -z-10 rounded-full"
-        style={{
-          width: 14,
-          height: 14,
-          top: "18%",
-          left: "12%",
-          background: "var(--primary)",
-          opacity: 0.35,
-        }}
-      />
-      <div
-        className="pointer-events-none absolute -z-10 rounded-full border"
-        style={{
-          width: 46,
-          height: 46,
-          bottom: "22%",
-          right: "10%",
-          borderColor: "var(--primary-surface)",
-        }}
-      />
-
+      {/* Header */}
       <motion.span
         variants={fadeUp}
         className="font-mono text-xs tracking-[0.2em] uppercase"
@@ -98,33 +71,122 @@ export default function Showcase() {
 
       <motion.h2
         variants={fadeUp}
-        className="font-display mt-4 text-3xl sm:text-4xl font-medium max-w-lg text-[var(--ink)]"
+        className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]"
       >
         See BookSwap in action
       </motion.h2>
 
       <motion.p
         variants={fadeUp}
-        className="mt-4 max-w-md text-sm sm:text-base"
-        style={{ color: "var(--ink-soft)" }}
+        className="mt-4 max-w-md text-sm sm:text-base text-[var(--ink-soft)]"
       >
         From discovering a book to chatting with your swap partner.
       </motion.p>
 
-      <motion.div
-        variants={staggerContainer(0.1)}
-        className="mt-14 grid grid-cols-2 gap-5 sm:gap-8 w-full max-w-[420px] sm:max-w-[520px]"
-      >
-        {screens.map((screen, i) => (
+      {/* Grid - Cut Effect Layer Kartlar */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-14 w-full">
+        {features.map((feature, idx) => (
           <motion.div
-            key={screen.src}
-            variants={phoneItem}
-            className={i % 2 === 1 ? "sm:translate-y-10" : ""}
+            key={feature.id}
+            variants={fadeUp}
+            whileHover={{ y: -4 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="
+              group
+              relative
+              overflow-hidden
+              rounded-2xl
+              p-6
+              pt-8
+              pb-0
+              flex flex-col items-center justify-between gap-4
+              text-center
+              shadow-[0_8px_30px_rgb(0,0,0,0.04)]
+              h-[400px] sm:h-[420px]
+            "
+            style={{
+              background: "var(--paper-card, #ffffff)",
+            }}
           >
-            <PhoneFrame src={screen.src} alt={screen.alt} priority={i === 0} />
+            {/* Metin Kutusu (Sabit Üst Bölüm) */}
+            <div className="relative z-20 max-w-xs shrink-0">
+              <h3 className="font-display text-lg font-medium text-[var(--ink)]">
+                {feature.title}
+              </h3>
+
+              <p className="mt-2 text-sm leading-relaxed text-[var(--ink-soft)]">
+                {feature.description}
+              </p>
+            </div>
+
+            {/* Görsel Alanı - Cut-out / Taşma Efekti (Metinden Tamamen Ayrıştırıldı) */}
+            <div className="relative z-10 w-full flex-1 flex items-end justify-center overflow-hidden pt-4">
+              {feature.secondarySrc && feature.primarySrc ? (
+                /* Çift Ekranlı Cut Effect */
+                <div className="relative w-full max-w-[280px] h-full flex items-end justify-center">
+                  {/* Sol Ekran */}
+                  <div
+                    className="
+                      absolute
+                      left-1 sm:left-2
+                      bottom-[-70px]
+                      w-[160px]
+                      z-20
+                      shadow-xl
+                      transition-transform
+                      duration-300
+                      group-hover:translate-y-[-6px]
+                    "
+                  >
+                    <PhoneFrame
+                      src={feature.primarySrc}
+                      alt={feature.alt}
+                      priority={idx === 0}
+                    />
+                  </div>
+                  {/* Sağ Ekran */}
+                  <div
+                    className="
+                      absolute
+                      right-1 sm:right-2
+                      bottom-[-100px]
+                      w-[155px]
+                      z-10
+                      opacity-80
+                      transition-transform
+                      duration-300
+                      group-hover:translate-y-[-4px]
+                    "
+                  >
+                    <PhoneFrame
+                      src={feature.secondarySrc}
+                      alt={`${feature.alt} secondary`}
+                    />
+                  </div>
+                </div>
+              ) : (
+                /* Tek Ekranlı Cut Effect */
+                <div
+                  className="
+                    w-[175px]
+                    translate-y-20
+                    transition-transform
+                    duration-300
+                    ease-out
+                    group-hover:translate-y-16
+                  "
+                >
+                  <PhoneFrame
+                    src={feature.src!}
+                    alt={feature.alt}
+                    priority={idx === 0}
+                  />
+                </div>
+              )}
+            </div>
           </motion.div>
         ))}
-      </motion.div>
+      </div>
     </motion.section>
   );
 }

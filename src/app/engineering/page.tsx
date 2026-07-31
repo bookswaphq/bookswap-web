@@ -1,20 +1,26 @@
 import type { Metadata } from "next";
+import { Footer, Navbar } from "@/components/marketing";
+import CaseStudy from "@/components/engineering/CaseStudy";
 
 export const metadata: Metadata = {
   title: "Engineering Case Study",
   description:
-    "End-to-end design and development of a React Native book exchange platform.",
-  robots: { index: false, follow: true },
+    "How BookSwap was scoped, architected, built, and shipped — a React Native app, a custom Python/PostgreSQL backend, and a self-hosted data pipeline, from zero to the App Store and Google Play.",
+  robots: { index: true, follow: true },
 };
 
-export default function CaseStudy() {
+export default function EngineeringPage() {
   return (
-    <main className="max-w-3xl mx-auto py-20 px-6">
-      <h1 className="text-4xl font-bold">BookSwap Case Study</h1>
-
-      <p className="mt-6 text-gray-600">
-        End-to-end design and development of a React Native book exchange platform.
-      </p>
+    <main
+      className="font-body min-h-screen flex flex-col items-center"
+      style={{
+        background: "var(--paper)",
+        color: "var(--ink)",
+      }}
+    >
+      <Navbar />
+      <CaseStudy />
+      <Footer />
     </main>
   );
 }
