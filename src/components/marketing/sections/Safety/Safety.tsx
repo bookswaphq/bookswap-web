@@ -14,7 +14,7 @@ const tips = [
   },
   {
     title: "Trust your instincts",
-    copy: "You can decline or cancel a swap at any point — no explanation needed.",
+    copy: "You can decline or cancel a swap at any point no explanation needed.",
   },
 ];
 
