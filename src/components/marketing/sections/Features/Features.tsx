@@ -8,7 +8,7 @@ export default function Features() {
     {
       ch: "Chapter I",
       title: "Scan to add",
-      copy: "Point your camera at any barcode and add a book to your shelf in seconds — no typing required.",
+      copy: "Point your camera at any barcode and add a book to your shelf in seconds no typing required.",
     },
     {
       ch: "Chapter II",
