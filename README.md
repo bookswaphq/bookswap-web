@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/icon-1024x1024.png" alt="BookSwap Logo" width="120">
+  <img src="docs/app-icon.png" alt="BookSwap Logo" width="120">
 </p>
 
 <h1 align="center">BookSwap</h1>
