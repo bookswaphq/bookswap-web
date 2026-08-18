@@ -176,12 +176,12 @@ const sections: Section[] = [
       {
         type: "list",
         items: [
-          "Google Firebase Authentication — phone number sign-in",
-          "Google Firebase Firestore — real-time messaging",
-          "Google Firebase Crashlytics — crash and diagnostic reporting, which may be linked to your account identifier",
-          "Google reCAPTCHA Enterprise — protecting sign-in from automated abuse",
-          "Expo Push Notification Service — delivering push notifications",
-          "DigitalOcean — cloud hosting and storage of images",
+          "Google Firebase Authentication - phone number sign-in",
+          "Google Firebase Firestore - real-time messaging",
+          "Google Firebase Crashlytics - crash and diagnostic reporting, which may be linked to your account identifier",
+          "Google reCAPTCHA Enterprise - protecting sign-in from automated abuse",
+          "Expo Push Notification Service - delivering push notifications",
+          "DigitalOcean - cloud hosting and storage of images",
         ],
       },
       {
