@@ -104,6 +104,11 @@ const sections: Section[] = [
         type: "text",
         text: "BookSwap requests camera access to let you scan book barcodes and take a profile photo. We do not access your camera for unrelated purposes.",
       },
+      { type: "subtitle", text: "Photo Library" },
+      {
+        type: "text",
+        text: "BookSwap requests access to your photo library so you can choose an existing photo as your profile picture. We only access the photos you select, and we do not scan or upload your photo library.",
+      },
       { type: "subtitle", text: "Notifications" },
       {
         type: "text",
@@ -153,32 +158,11 @@ const sections: Section[] = [
     blocks: [
       {
         type: "text",
-        text: "BookSwap uses multiple secure technologies to provide its services.",
+        text: "Your information is stored on secure cloud infrastructure operated by BookSwap and by the service providers listed in the following section. This includes your account and library data, your messages, and any images you upload.",
       },
-      { type: "subtitle", text: "PostgreSQL" },
       {
         type: "text",
-        text: "Most application data, including account information, libraries, wishlists, swap offers, and other operational data, is stored in secure PostgreSQL databases.",
-      },
-      { type: "subtitle", text: "Firebase Authentication" },
-      {
-        type: "text",
-        text: "Phone number authentication is provided by Google Firebase Authentication.",
-      },
-      { type: "subtitle", text: "Firebase Firestore" },
-      {
-        type: "text",
-        text: "Real-time chat messages are stored using Firebase Firestore.",
-      },
-      { type: "subtitle", text: "DigitalOcean Spaces" },
-      {
-        type: "text",
-        text: "Profile photos and book images are stored using DigitalOcean Spaces.",
-      },
-      { type: "subtitle", text: "Firebase Crashlytics" },
-      {
-        type: "text",
-        text: "Crash logs and diagnostic data are collected using Google Firebase Crashlytics to help us identify and fix technical issues. This data may be linked to your account identifier.",
+        text: "Access to this infrastructure is restricted to authorized personnel and systems that require it to operate the Services.",
       },
     ],
   },
@@ -192,12 +176,12 @@ const sections: Section[] = [
       {
         type: "list",
         items: [
-          "Google Firebase Authentication",
-          "Google Firebase Firestore",
-          "Google Firebase Crashlytics",
-          "Google reCAPTCHA Enterprise (used to protect account authentication from automated abuse)",
-          "Expo Push Notification Service",
-          "DigitalOcean Spaces",
+          "Google Firebase Authentication — phone number sign-in",
+          "Google Firebase Firestore — real-time messaging",
+          "Google Firebase Crashlytics — crash and diagnostic reporting, which may be linked to your account identifier",
+          "Google reCAPTCHA Enterprise — protecting sign-in from automated abuse",
+          "Expo Push Notification Service — delivering push notifications",
+          "DigitalOcean — cloud hosting and storage of images",
         ],
       },
       {
@@ -256,11 +240,11 @@ const sections: Section[] = [
     blocks: [
       {
         type: "text",
-        text: "BookSwap is not intended for children under the age of 13.",
+        text: "BookSwap is intended for users aged 13 and older, and is not directed to children under 13. By creating an account, you confirm that you are at least 13 years old. Where local law requires a higher minimum age or parental consent for users under a specified age, you must meet that requirement to use the Services.",
       },
       {
         type: "text",
-        text: "We do not knowingly collect personal information from children. If we become aware that we have collected information from a child without appropriate consent, we will delete that information promptly.",
+        text: "We do not knowingly collect personal information from children under 13. If we become aware that we have collected information from a child without appropriate consent, we will delete that information promptly. If you believe a child has provided us with personal information, please contact us using the details below.",
       },
     ],
   },
@@ -281,9 +265,18 @@ const sections: Section[] = [
           "Withdrawal of consent where applicable",
         ],
       },
+      { type: "subtitle", text: "Deleting Your Account" },
       {
         type: "text",
-        text: "To exercise these rights, please contact us using the contact information below.",
+        text: "You can delete your BookSwap account at any time directly in the app, without contacting us. Open the Profile tab, then select Delete Account and confirm.",
+      },
+      {
+        type: "text",
+        text: "Deleting your account removes your profile photo, clears your library and wishlist, cancels any pending swap offers, deletes your conversations, and removes or anonymizes your personal information as described in Section 7. This action cannot be undone.",
+      },
+      {
+        type: "text",
+        text: "To exercise any of the other rights listed above, please contact us using the contact information below.",
       },
     ],
   },
