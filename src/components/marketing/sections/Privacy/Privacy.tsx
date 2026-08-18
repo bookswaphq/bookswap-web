@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
 
-const effectiveDate = "July 21, 2026";
+const effectiveDate = "August 18, 2026";
 
 type Block =
   | { type: "text"; text: string }
@@ -41,6 +41,8 @@ const sections: Section[] = [
         items: [
           "Public profile details",
           "Profile image",
+          "Birthdate",
+          "Gender",
           "Bio or other profile information (if provided)",
         ],
       },
@@ -89,6 +91,7 @@ const sections: Section[] = [
           "Device language",
           "Push notification token",
           "IP address (when required for security and service operation)",
+          "Crash logs and diagnostic data, which may be linked to your account to help us troubleshoot issues",
         ],
       },
     ],
@@ -99,7 +102,7 @@ const sections: Section[] = [
       { type: "subtitle", text: "Camera" },
       {
         type: "text",
-        text: "BookSwap requests camera access solely to allow users to scan book barcodes. We do not access your camera for unrelated purposes.",
+        text: "BookSwap requests camera access to let you scan book barcodes and take a profile photo. We do not access your camera for unrelated purposes.",
       },
       { type: "subtitle", text: "Notifications" },
       {
@@ -172,6 +175,11 @@ const sections: Section[] = [
         type: "text",
         text: "Profile photos and book images are stored using DigitalOcean Spaces.",
       },
+      { type: "subtitle", text: "Firebase Crashlytics" },
+      {
+        type: "text",
+        text: "Crash logs and diagnostic data are collected using Google Firebase Crashlytics to help us identify and fix technical issues. This data may be linked to your account identifier.",
+      },
     ],
   },
   {
@@ -186,7 +194,9 @@ const sections: Section[] = [
         items: [
           "Google Firebase Authentication",
           "Google Firebase Firestore",
-          "Google Firebase Cloud Messaging",
+          "Google Firebase Crashlytics",
+          "Google reCAPTCHA Enterprise (used to protect account authentication from automated abuse)",
+          "Expo Push Notification Service",
           "DigitalOcean Spaces",
         ],
       },
@@ -295,7 +305,7 @@ const sections: Section[] = [
     blocks: [
       {
         type: "text",
-        text: "BookSwap may introduce additional services such as analytics, crash reporting, or other operational tools to improve the application.",
+        text: "BookSwap may introduce additional services such as analytics or other operational tools to improve the application.",
       },
       {
         type: "text",
