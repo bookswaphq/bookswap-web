@@ -11,19 +11,33 @@ const faqs = [
   },
   {
     q: "How do I get access?",
-    a: "We're inviting readers in small groups rather than opening to everyone at once. Join the waitlist and we'll email you when it's your turn.",
+    a: "BookSwap is currently preparing for launch on the App Store. Join the waitlist and we'll let you know when the app is available.",
   },
   {
     q: "Which platforms does it run on?",
-    a: "BookSwap is built with React Native and is rolling out on iOS first, with other platforms planned.",
+    a: "BookSwap is launching on iOS first. We plan to bring it to other platforms in the future.",
   },
   {
     q: "How does a swap actually happen?",
-    a: "You agree on a book-for-book trade, then arrange a handoff through in-app chat — most readers meet locally or find a drop-off that works for both sides.",
+    a: "Send a swap request for a book you want. Once the swap is accepted, chat with the other reader and arrange a handoff that works for both of you.",
   },
   {
     q: "What data do you collect?",
-    a: "Only what's needed to run BookSwap — matching you with nearby readers and managing your swaps. A full privacy policy will be published before general launch.",
+    a: (
+      <>
+        We collect the information needed to create your account, manage your
+        library and wishlist, facilitate book swaps, and provide in-app
+        messaging. See our{" "}
+        <a
+          href="/privacy"
+          className="underline"
+          style={{ color: "var(--primary)" }}
+        >
+          Privacy Policy
+        </a>{" "}
+        for details about what data we collect and how we use it.
+      </>
+    ),
   },
 ];
 

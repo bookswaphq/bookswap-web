@@ -12,8 +12,8 @@ export default function Features() {
     },
     {
       ch: "Chapter II",
-      title: "See who's nearby",
-      copy: "Every book shows how many readers already own it, so you know a swap is possible before you ask.",
+      title: "Find a swap",
+      copy: "See how many readers own a book before you send a swap request.",
     },
     {
       ch: "Chapter III",

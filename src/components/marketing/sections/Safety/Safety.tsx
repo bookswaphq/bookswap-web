@@ -6,11 +6,11 @@ import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
 const tips = [
   {
     title: "Chat before you meet",
-    copy: "Get a feel for your swap partner in the app before agreeing on a time and place.",
+    copy: "Once a swap is accepted, chat with your swap partner to agree on the details of your exchange.",
   },
   {
     title: "Meet in public",
-    copy: "Coffee shops, libraries, and campus commons are easy, low-key spots for a handoff.",
+    copy: "Choose a public place for your handoff, such as a café, library, or other familiar spot.",
   },
   {
     title: "Trust your instincts",
@@ -48,8 +48,7 @@ export default function Safety() {
         className="mt-4 max-w-md text-sm sm:text-base"
         style={{ color: "var(--ink-soft)" }}
       >
-        BookSwap connects you with real readers nearby. A few habits make
-        every handoff smoother.
+        BookSwap connects readers who want to exchange books they've finished with books they want to read next.
       </motion.p>
 
       <div className="mt-12 w-full flex flex-col gap-4 text-left">

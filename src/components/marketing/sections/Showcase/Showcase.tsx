@@ -19,15 +19,15 @@ const features: Feature[] = [
     id: "scan",
     title: "Instant Barcode Scan",
     description:
-      "Scan any book's barcode to add it to your shelf in seconds—no manual entry needed.",
+      "Scan any book's barcode to add it to your shelf in seconds no manual entry needed.",
     src: "/screenshots/barcode-scan.png",
     alt: "Barcode scanning screen showing instant book detail recognition",
   },
   {
     id: "search",
-    title: "Find Nearby Owners",
+    title: "Find Books to Swap",
     description:
-      "Search any title and immediately see how many local readers have it ready to swap.",
+      "Explore books, see how many readers own the ones you want, and send a swap request.",
     src: "/screenshots/search-owners.png",
     alt: "Search results screen displaying available book owners nearby",
   },
@@ -35,8 +35,8 @@ const features: Feature[] = [
     id: "library",
     title: "Wishlist & Library",
     description:
-      "Organize your personal shelf and keep a wishlist to automatically trigger swap matches.",
-    src: "/screenshots/receive-offer.png",
+      "Organize your library and keep track of the books you'd like to receive in a swap.",
+    src: "/screenshots/library.png",
     alt: "Personal library and wishlist management screen",
   },
   {

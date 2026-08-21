@@ -8,12 +8,12 @@ export default function HowItWorks() {
     {
       n: "1",
       title: "List your book",
-      copy: "Add a book from your shelf with a cover, title, and a little detail about it.",
+      copy: "Search the catalog, find your book, and add it to your library in just a few taps.",
     },
     {
       n: "2",
       title: "Receive swap offers",
-      copy: "Other readers can offer books they want to exchange with you.",
+      copy: "Other readers can request your book and make an offer in return.",
     },
     {
       n: "3",
@@ -43,7 +43,7 @@ export default function HowItWorks() {
         variants={fadeUp}
         className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]"
       >
-        Three pages, one new book
+        Three steps, one new book
       </motion.h2>
 
       <div className="mt-14 w-full flex flex-col gap-6">

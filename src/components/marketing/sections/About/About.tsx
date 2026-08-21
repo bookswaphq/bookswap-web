@@ -34,10 +34,7 @@ export default function About() {
         className="mt-6 text-sm max-w-md"
         style={{ color: "var(--ink-soft)" }}
       >
-        BookSwap is a simple way for readers to exchange books they&apos;ve
-        finished and discover new ones from other shelves. List your books,
-        receive swap offers, chat with readers, and give every story a new
-        journey.
+        BookSwap is a simple way for readers to exchange books they&apos;ve finished and discover new ones from other readers. Search the catalog, add books to your library, send and receive swap requests, and chat with your swap partner to arrange the exchange.
       </motion.p>
 
       <motion.div

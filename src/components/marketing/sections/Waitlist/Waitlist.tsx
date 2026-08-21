@@ -26,7 +26,7 @@ export default function Waitlist() {
         variants={fadeUp}
         className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]"
       >
-        Save your spot on the shelf
+        Keep stories moving
       </motion.h2>
 
       <motion.p
@@ -34,8 +34,7 @@ export default function Waitlist() {
         className="mt-3 text-sm max-w-sm"
         style={{ color: "var(--ink-soft)" }}
       >
-        We&apos;re opening BookSwap to a small group of readers first, so
-        every early swap actually works. Get on the list to be one of them.
+        BookSwap is getting ready to launch on the App Store. Join the waitlist and we'll let you know when it's available.
       </motion.p>
 
       <motion.div variants={fadeUp} className="mt-1 w-full rounded-3xl p-6">

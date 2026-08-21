@@ -51,7 +51,7 @@ export default function Hero() {
           href="#waitlist"
           className="btn-primary rounded-xl px-6 py-3 font-medium"
         >
-          Get Early Access
+          Join the Waitlist
         </a>
       </motion.div>
 
