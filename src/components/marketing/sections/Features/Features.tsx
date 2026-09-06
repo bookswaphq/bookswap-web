@@ -3,96 +3,64 @@
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
 
-export default function Features() {
-  const features = [
-    {
-      ch: "Chapter I",
-      title: "Scan to add",
-      copy: "Point your camera at any barcode and add a book to your shelf in seconds no typing required.",
-    },
-    {
-      ch: "Chapter II",
-      title: "Find a swap",
-      copy: "See how many readers own a book before you send a swap request.",
-    },
-    {
-      ch: "Chapter III",
-      title: "Chat inside the app",
-      copy: "Agree on the details and arrange your handoff without ever leaving BookSwap.",
-    },
-  ];
+const features = [
+  {
+    title: "Scan to add",
+    copy: "Point your camera at any barcode and add a book to your shelf in seconds no typing required.",
+  },
+  {
+    title: "Find a swap",
+    copy: "See how many readers own a book before you send a swap request.",
+  },
+  {
+    title: "Chat inside the app",
+    copy: "Agree on the details and arrange your handoff without ever leaving BookSwap.",
+  },
+];
 
+export default function Features() {
   return (
     <motion.section
       id="features"
       initial="hidden"
       whileInView="visible"
       viewport={viewport}
-      variants={staggerContainer(0.1)}
-      className="w-full max-w-4xl px-6 py-20 flex flex-col items-center text-center"
+      variants={staggerContainer(0.12)}
+      className="w-full max-w-5xl px-6 py-24"
     >
-      <motion.span
+      <motion.header
         variants={fadeUp}
-        className="font-mono text-xs tracking-[0.2em] uppercase"
-        style={{ color: "var(--primary)" }}
+        className="mx-auto flex max-w-2xl flex-col items-center text-center"
       >
-        Built For Readers
-      </motion.span>
+        <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--primary)]">
+          Inside BookSwap
+        </span>
 
-      <motion.h2
-        variants={fadeUp}
-        className="font-display mt-4 text-3xl sm:text-4xl font-medium max-w-lg text-[var(--ink)]"
-      >
-        The details that make it easy
-      </motion.h2>
+        <h2 className="mt-4 font-display text-3xl font-medium leading-tight text-[var(--ink)] sm:text-4xl">
+          A shorter journey between two bookshelves.
+        </h2>
 
-      <div className="mt-14 grid sm:grid-cols-3 gap-8 w-full">
-        {features.map((f) => (
-          <motion.div
-            key={f.title}
+        <p className="mt-5 max-w-xl text-sm leading-7 text-[var(--ink-soft)]">
+          Add what you’ve finished, find what you want to read next, and arrange
+          the swap in one place.
+        </p>
+      </motion.header>
+
+      <div className="mx-auto mt-14 w-full max-w-4xl border-t border-[var(--border)]">
+        {features.map(({ title, copy }) => (
+          <motion.article
+            key={title}
             variants={fadeUp}
-            className="card-lift rounded-2xl p-6 flex flex-col items-center text-center"
-            style={{
-              background: "var(--paper-card)",
-              border: "1px solid var(--border)",
-            }}
+            className="grid gap-4 border-b border-[var(--border)] py-9 text-left md:grid-cols-[0.8fr_1.2fr] md:items-start md:gap-14"
           >
-            <div
-              className="w-20 h-20 rounded-full flex items-center justify-center mb-5"
-              style={{
-                background: "var(--primary-soft)",
-              }}
-            >
-              <span
-                className="w-3 h-3 rounded-full"
-                style={{
-                  background: "var(--primary)",
-                }}
-              />
-            </div>
-
-            <span
-              className="font-mono text-xs tracking-[0.2em] uppercase"
-              style={{
-                color: "var(--ink-muted)",
-              }}
-            >
-              {f.ch}
-            </span>
-
-            <h3 className="font-display mt-2 text-lg font-medium text-[var(--ink)]">
-              {f.title}
+            <h3 className="max-w-md font-display text-xl font-medium leading-snug text-[var(--ink)] sm:text-2xl">
+              {title}
             </h3>
 
-            <p
-              className="mt-2 text-sm max-w-[220px]"
-              style={{
-                color: "var(--ink-soft)",
-              }}
-            >
-              {f.copy}
+            <p className="max-w-lg text-sm leading-7 text-[var(--ink-soft)] md:pt-0.5">
+              {copy}
             </p>
-          </motion.div>
+          </motion.article>
         ))}
       </div>
     </motion.section>

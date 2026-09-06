@@ -151,7 +151,12 @@ body {
 
 /* Images */
 
-img {
-  max-width: 100%;
-  height: auto;
+/* Inside @layer base so Tailwind utilities (h-6, w-auto, object-contain…) can
+   still override it — an unlayered rule here would beat every utility class,
+   whatever its specificity. */
+@layer base {
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 }
