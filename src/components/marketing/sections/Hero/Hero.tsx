@@ -53,7 +53,7 @@ export default function Hero() {
           href="#showcase"
           className="btn-primary rounded-xl px-6 py-3 font-medium"
         >
-          Discover Books
+          Join Waitlist
         </a>
 
         <a
