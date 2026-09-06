@@ -50,7 +50,7 @@ export default function Hero() {
         className="mt-8 flex flex-wrap gap-3 sm:gap-4 justify-center"
       >
         <a
-          href="#showcase"
+          href="#waitlist"
           className="btn-primary rounded-xl px-6 py-3 font-medium"
         >
           Join Waitlist
