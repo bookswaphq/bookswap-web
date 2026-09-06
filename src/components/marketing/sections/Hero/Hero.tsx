@@ -2,14 +2,16 @@
 
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer } from "@/lib/motion";
+import HeroVisual from "@/components/three/HeroVisual";
 
 export default function Hero() {
   return (
     <motion.section
+      id="hero"
       initial="hidden"
       animate="visible"
-      variants={staggerContainer(0.12, 0.1)}
-      className="w-full max-w-2xl flex flex-col items-center text-center px-6 pt-40 pb-20"
+      variants={staggerContainer(0.11, 0.08)}
+      className="relative w-full flex flex-col items-center text-center px-6 pt-32 pb-12 sm:pt-36 overflow-hidden"
     >
       <motion.span
         variants={fadeUp}
@@ -25,97 +27,55 @@ export default function Hero() {
 
       <motion.h1
         variants={fadeUp}
-        className="font-display mt-6 text-5xl sm:text-6xl font-medium leading-[1.05] tracking-tight text-[var(--ink)]"
+        className="font-display mt-6 max-w-4xl text-4xl sm:text-5xl lg:text-[3.5rem] font-medium leading-[1.08] tracking-tight text-[var(--ink)] text-balance"
       >
-        Discover books.
-        <br />
-        Exchange with readers.
-        <br />
-        Keep stories moving.
+        Your finished book is{" "}
+        <span className="italic" style={{ color: "var(--primary)" }}>
+          someone else&apos;s
+        </span>{" "}
+        next story.
       </motion.h1>
 
       <motion.p
         variants={fadeUp}
-        className="mt-6 text-lg max-w-md"
+        className="mt-5 text-lg max-w-xl"
         style={{ color: "var(--ink-soft)" }}
       >
-        BookSwap helps you discover new reads, offer books you&apos;ve finished,
-        and connect with readers to exchange stories.
+        Two shelves, one exchange. BookSwap helps you find the book you want on
+        another reader&apos;s shelf — and send one of yours back the other way.
       </motion.p>
 
       <motion.div
         variants={fadeUp}
-        className="mt-9 flex flex-wrap gap-4 justify-center"
+        className="mt-8 flex flex-wrap gap-3 sm:gap-4 justify-center"
       >
         <a
-          href="#waitlist"
+          href="#showcase"
           className="btn-primary rounded-xl px-6 py-3 font-medium"
         >
-          Join the Waitlist
+          Discover Books
+        </a>
+
+        <a
+          href="#how-it-works"
+          className="btn-outline rounded-xl px-6 py-3 font-medium"
+        >
+          How Swapping Works
         </a>
       </motion.div>
 
-      {/* Signature bookshelf illustration */}
-      <motion.div
-        variants={fadeUp}
-        className="spine-group mt-16 flex items-end gap-2 h-36"
-      >
-        <div
-          className="spine w-8 rounded-t-sm"
-          style={{
-            height: "70%",
-            background: "var(--primary)",
-            "--tilt": "-3deg",
-          } as React.CSSProperties}
-        />
-
-        <div
-          className="spine w-8 rounded-t-sm"
-          style={{
-            height: "95%",
-            background: "var(--ink)",
-            "--tilt": "2deg",
-          } as React.CSSProperties}
-        />
-
-        <div
-          className="spine w-8 rounded-t-sm"
-          style={{
-            height: "55%",
-            background: "var(--primary-soft)",
-            border: "1px solid var(--border)",
-            "--tilt": "-2deg",
-          } as React.CSSProperties}
-        />
-
-        <div
-          className="spine w-8 rounded-t-sm"
-          style={{
-            height: "100%",
-            background: "var(--primary-dark)",
-            "--tilt": "3deg",
-          } as React.CSSProperties}
-        />
-
-        <div
-          className="spine w-8 rounded-t-sm"
-          style={{
-            height: "65%",
-            background: "var(--paper-card)",
-            border: "1px solid var(--border)",
-            "--tilt": "-4deg",
-          } as React.CSSProperties}
-        />
-
-        <div
-          className="spine w-8 rounded-t-sm"
-          style={{
-            height: "85%",
-            background: "var(--primary)",
-            "--tilt": "1deg",
-          } as React.CSSProperties}
-        />
+      {/* Two shelves trading a pair of books. WebGL on desktop, CSS elsewhere. */}
+      <motion.div variants={fadeUp} className="w-full max-w-5xl mt-5 sm:mt-6">
+        <HeroVisual />
       </motion.div>
+
+      <motion.p
+        variants={fadeUp}
+        className="font-mono text-[11px] tracking-[0.18em] uppercase mt-4"
+        style={{ color: "var(--ink-muted)" }}
+      >
+        28M+ titles · offer · match · swap
+      </motion.p>
     </motion.section>
   );
 }
