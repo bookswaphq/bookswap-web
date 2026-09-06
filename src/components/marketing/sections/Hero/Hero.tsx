@@ -11,7 +11,7 @@ export default function Hero() {
       initial="hidden"
       animate="visible"
       variants={staggerContainer(0.11, 0.08)}
-      className="relative w-full flex flex-col items-center text-center px-6 pt-32 pb-12 sm:pt-36 overflow-hidden"
+      className="relative w-full flex flex-col items-center text-center px-6 pt-28 pb-12 sm:pt-32 overflow-hidden"
     >
       <motion.span
         variants={fadeUp}
@@ -27,7 +27,7 @@ export default function Hero() {
 
       <motion.h1
         variants={fadeUp}
-        className="font-display mt-6 max-w-4xl text-4xl sm:text-5xl lg:text-[3.5rem] font-medium leading-[1.08] tracking-tight text-[var(--ink)] text-balance"
+        className="font-display mt-6 max-w-4xl text-4xl sm:text-5xl lg:text-[3.25rem] font-medium leading-[1.08] tracking-tight text-[var(--ink)] text-balance"
       >
         Your finished book is{" "}
         <span className="italic" style={{ color: "var(--primary)" }}>
@@ -38,7 +38,7 @@ export default function Hero() {
 
       <motion.p
         variants={fadeUp}
-        className="mt-5 text-lg max-w-xl"
+        className="mt-4 text-lg max-w-xl"
         style={{ color: "var(--ink-soft)" }}
       >
         Two shelves, one exchange. BookSwap helps you find the book you want on
@@ -47,7 +47,7 @@ export default function Hero() {
 
       <motion.div
         variants={fadeUp}
-        className="mt-8 flex flex-wrap gap-3 sm:gap-4 justify-center"
+        className="mt-7 flex flex-wrap gap-3 sm:gap-4 justify-center"
       >
         <a
           href="#showcase"
@@ -65,7 +65,7 @@ export default function Hero() {
       </motion.div>
 
       {/* Two shelves trading a pair of books. WebGL on desktop, CSS elsewhere. */}
-      <motion.div variants={fadeUp} className="w-full max-w-5xl mt-5 sm:mt-6">
+      <motion.div variants={fadeUp} className="w-full max-w-5xl mt-5">
         <HeroVisual />
       </motion.div>
 
