@@ -55,9 +55,9 @@ export default function HeroVisual() {
     <div
       className="relative w-full overflow-hidden rounded-[24px] sm:rounded-[32px]"
       style={{
-        background: `radial-gradient(120% 90% at 50% 8%, ${PALETTE.panel} 0%, ${PALETTE.panelDeep} 62%, #E7D9C2 100%)`,
+        background: `linear-gradient(180deg, #FBFAF7 0%, ${PALETTE.panel} 48%, ${PALETTE.panelDeep} 100%)`,
         boxShadow:
-          "inset 0 0 0 1px rgba(42,33,48,0.07), 0 26px 60px -44px rgba(42,33,48,0.55)",
+          "inset 0 0 0 1px rgba(59,53,64,0.07), 0 24px 56px -46px rgba(59,53,64,0.45)",
       }}
     >
       <div className="relative h-[200px] sm:h-[264px] md:h-[326px] lg:h-[378px]">
@@ -70,7 +70,7 @@ export default function HeroVisual() {
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(110% 88% at 50% 42%, rgba(42,33,48,0) 48%, rgba(42,33,48,0.16) 100%)",
+            "radial-gradient(115% 92% at 50% 40%, rgba(59,53,64,0) 55%, rgba(59,53,64,0.09) 100%)",
         }}
       />
 
@@ -78,7 +78,7 @@ export default function HeroVisual() {
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 mix-blend-multiply"
-        style={{ backgroundImage: GRAIN, opacity: 0.055 }}
+        style={{ backgroundImage: GRAIN, opacity: 0.045 }}
       />
     </div>
   );

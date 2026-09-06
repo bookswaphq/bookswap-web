@@ -2,30 +2,10 @@ import * as THREE from "three";
 import { PALETTE } from "./scene-config";
 
 /**
- * Painted backdrops for the two nooks. Drawing the alcove, its lamplight and
- * the reader silhouette onto canvases — rather than modelling them — keeps the
- * scene closer to an illustration than to a rendering, and costs one draw call
- * each. All of these run in the browser only; the scene is client-side.
+ * Small painted props. Drawing the ivy rather than modelling it keeps the
+ * scene closer to an illustration, and costs one draw call.
+ * These run in the browser only; the scene is client-side.
  */
-
-function rounded(
-  ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  w: number,
-  h: number,
-  r: number
-) {
-  const radius = Math.min(r, w / 2, h / 2);
-  ctx.beginPath();
-  ctx.moveTo(x + radius, y);
-  ctx.arcTo(x + w, y, x + w, y + h, radius);
-  ctx.arcTo(x + w, y + h, x, y + h, radius);
-  ctx.arcTo(x, y + h, x, y, radius);
-  ctx.arcTo(x, y, x + w, y, radius);
-  ctx.closePath();
-  ctx.fill();
-}
 
 function canvasTexture(
   width: number,
@@ -45,118 +25,101 @@ function canvasTexture(
   return texture;
 }
 
-/** The arched alcove: warm wall, lamplight pooling near the top, floor below. */
-export function makeArchTexture() {
-  return canvasTexture(512, 560, (ctx) => {
-    const W = 512;
-    const H = 560;
-    const inset = 8;
-    const radius = W / 2 - inset;
-    const springLine = 268;
+type Point = { x: number; y: number };
 
-    const arch = () => {
-      ctx.beginPath();
-      ctx.moveTo(inset, H);
-      ctx.lineTo(inset, springLine);
-      ctx.arc(W / 2, springLine, radius, Math.PI, 0);
-      ctx.lineTo(W - inset, H);
-      ctx.closePath();
-    };
+/** A point and a tangent angle along a cubic bezier. */
+function onCurve(p: Point[], t: number) {
+  const u = 1 - t;
+  const at = (k: "x" | "y") =>
+    u * u * u * p[0][k] +
+    3 * u * u * t * p[1][k] +
+    3 * u * t * t * p[2][k] +
+    t * t * t * p[3][k];
+  const slope = (k: "x" | "y") =>
+    3 * u * u * (p[1][k] - p[0][k]) +
+    6 * u * t * (p[2][k] - p[1][k]) +
+    3 * t * t * (p[3][k] - p[2][k]);
 
-    // Soft drop shadow so the alcove lifts off the page panel.
-    ctx.save();
-    ctx.shadowColor = "rgba(42, 33, 48, 0.20)";
-    ctx.shadowBlur = 34;
-    ctx.shadowOffsetY = 14;
-    const wall = ctx.createLinearGradient(0, springLine - radius, 0, H);
-    wall.addColorStop(0, PALETTE.wallTop);
-    wall.addColorStop(0.62, PALETTE.wallBottom);
-    wall.addColorStop(1, PALETTE.floor);
-    ctx.fillStyle = wall;
-    arch();
-    ctx.fill();
-    ctx.restore();
-
-    ctx.save();
-    arch();
-    ctx.clip();
-
-    // Lamplight washing down the back wall.
-    const pool = ctx.createRadialGradient(W / 2, 150, 10, W / 2, 190, 330);
-    pool.addColorStop(0, "rgba(255, 205, 140, 0.62)");
-    pool.addColorStop(0.45, "rgba(255, 196, 128, 0.26)");
-    pool.addColorStop(1, "rgba(255, 190, 120, 0)");
-    ctx.fillStyle = pool;
-    ctx.fillRect(0, 0, W, H);
-
-    // Floor, and the shadow the alcove throws into its own corners.
-    ctx.fillStyle = PALETTE.floor;
-    ctx.fillRect(0, 484, W, H - 484);
-
-    const corner = ctx.createLinearGradient(0, 360, 0, 560);
-    corner.addColorStop(0, "rgba(42, 33, 48, 0)");
-    corner.addColorStop(1, "rgba(42, 33, 48, 0.20)");
-    ctx.fillStyle = corner;
-    ctx.fillRect(0, 360, W, 200);
-
-    const sides = ctx.createLinearGradient(0, 0, W, 0);
-    sides.addColorStop(0, "rgba(42, 33, 48, 0.16)");
-    sides.addColorStop(0.25, "rgba(42, 33, 48, 0)");
-    sides.addColorStop(0.75, "rgba(42, 33, 48, 0)");
-    sides.addColorStop(1, "rgba(42, 33, 48, 0.16)");
-    ctx.fillStyle = sides;
-    ctx.fillRect(0, 0, W, H);
-    ctx.restore();
-
-    // Thin ink keyline, the way an illustration would be inked.
-    ctx.strokeStyle = "rgba(42, 33, 48, 0.13)";
-    ctx.lineWidth = 3;
-    arch();
-    ctx.stroke();
-  });
+  return {
+    x: at("x"),
+    y: at("y"),
+    angle: Math.atan2(slope("y"), slope("x")),
+  };
 }
 
-/** A reader in an armchair, in profile, drawn white so the material can tint it. */
-export function makeSilhouetteTexture() {
-  return canvasTexture(320, 360, (ctx) => {
-    ctx.fillStyle = "#FFFFFF";
+function vine(
+  ctx: CanvasRenderingContext2D,
+  path: Point[],
+  options: { from: number; leaves: number; size: number; width: number }
+) {
+  ctx.strokeStyle = PALETTE.stem;
+  ctx.lineWidth = options.width;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(path[0].x, path[0].y);
+  ctx.bezierCurveTo(
+    path[1].x,
+    path[1].y,
+    path[2].x,
+    path[2].y,
+    path[3].x,
+    path[3].y
+  );
+  ctx.stroke();
 
-    // Armchair, seen from the side: back, seat, and a turned front leg.
+  for (let i = 0; i < options.leaves; i += 1) {
+    const t = options.from + ((1 - options.from) * i) / (options.leaves - 1);
+    const at = onCurve(path, t);
+    const side = i % 2 === 0 ? 1 : -1;
+    // Leaves get smaller toward the tip of the vine.
+    const scale = options.size * (1 - t * 0.45);
+
     ctx.save();
-    ctx.translate(96, 176);
-    ctx.rotate(-0.07);
-    rounded(ctx, -34, -80, 62, 224, 26);
-    ctx.restore();
-
-    rounded(ctx, 70, 232, 168, 40, 18);
-    rounded(ctx, 208, 262, 22, 72, 10);
-    rounded(ctx, 84, 262, 20, 68, 9);
-
-    // The reader: head, curved back, legs crossed toward the light.
+    ctx.translate(at.x, at.y);
+    ctx.rotate(at.angle + side * 1.05);
+    ctx.fillStyle = i % 3 === 0 ? PALETTE.leafLight : PALETTE.leaf;
     ctx.beginPath();
-    ctx.arc(150, 84, 30, 0, Math.PI * 2);
+    ctx.ellipse(scale * 0.9, 0, scale, scale * 0.68, 0, 0, Math.PI * 2);
     ctx.fill();
-
-    ctx.save();
-    ctx.translate(146, 168);
-    ctx.rotate(0.1);
-    rounded(ctx, -34, -62, 74, 130, 32);
+    // The notch that makes it read as a leaf rather than a dot.
+    ctx.beginPath();
+    ctx.moveTo(scale * 1.85, 0);
+    ctx.lineTo(scale * 1.15, scale * 0.42);
+    ctx.lineTo(scale * 1.15, -scale * 0.42);
+    ctx.closePath();
+    ctx.fill();
     ctx.restore();
+  }
+}
 
-    rounded(ctx, 150, 210, 96, 34, 17);
-    rounded(ctx, 214, 232, 30, 62, 14);
+/** Ivy trailing down over the edge of a shelf. */
+export function makeIvyTexture() {
+  return canvasTexture(300, 560, (ctx) => {
+    vine(
+      ctx,
+      [
+        { x: 168, y: 30 },
+        { x: 254, y: 168 },
+        { x: 66, y: 322 },
+        { x: 126, y: 522 },
+      ],
+      { from: 0.1, leaves: 12, size: 24, width: 6 }
+    );
 
-    // Arm and the book it is holding up to the lamp.
-    ctx.save();
-    ctx.translate(196, 150);
-    ctx.rotate(-0.34);
-    rounded(ctx, -46, -13, 84, 26, 12);
-    rounded(ctx, 26, -34, 16, 66, 5);
-    ctx.restore();
+    vine(
+      ctx,
+      [
+        { x: 150, y: 34 },
+        { x: 54, y: 128 },
+        { x: 186, y: 228 },
+        { x: 108, y: 352 },
+      ],
+      { from: 0.18, leaves: 8, size: 19, width: 5 }
+    );
   });
 }
 
-/** Soft round falloff, used for lamp bloom and for grounding shadows. */
+/** Soft round falloff, used for glows and for the shadows under the shelves. */
 export function makeGlowTexture() {
   return canvasTexture(256, 256, (ctx) => {
     const gradient = ctx.createRadialGradient(128, 128, 0, 128, 128, 128);

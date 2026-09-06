@@ -2,55 +2,62 @@
 
 import { useMemo } from "react";
 import {
+  BOARD_WIDTH,
+  type FlatBook,
   HERO_INDEX,
   HERO_LEFT,
   HERO_RIGHT,
   LEFT_SPINES,
+  LEFT_STACK,
   PALETTE,
+  PROP_X,
   RIGHT_SPINES,
-  SHELF_TOP_Y,
-  SHELF_X,
+  RIGHT_STACK,
+  SHELVES,
   type Spine,
   layoutRow,
 } from "./scene-config";
 
 /**
- * The same two reading nooks, drawn flat. This is what phones, reduced-motion
+ * The same two shelves, drawn flat. This is what phones, reduced-motion
  * visitors and browsers without WebGL get — it carries the same story (two
- * books leave their shelves, meet in the middle, trade places, and the nooks
- * warm up as they land) without loading three.js.
+ * books leave their shelves, meet in the middle and trade places) without
+ * loading three.js.
  */
 
 /** Scene units → SVG units. */
-const S = 60;
-/** Scene y of the arch apex; everything is measured down from here. */
-const TOP_Y = 3.62;
-const FLOOR_Y = -0.42;
+const S = 64;
+/** Scene y at the top of the frame; everything is measured down from here. */
+const TOP_Y = 3.05;
+const BOTTOM_Y = 0.16;
 
 const px = (sceneY: number) => (TOP_Y - sceneY) * S;
+const BOARD_PX = BOARD_WIDTH * S;
 
-const ARCH_HALF = 117;
-const SPRING_Y = px(1.687);
-const FLOOR_PX = px(FLOOR_Y);
-const SHELF_PX = px(SHELF_TOP_Y);
+/* ------------------------------------------------------------ storyboard */
 
-/** The flight of one book, as offsets from its home slot. */
 type Pose = { at: number; dx: number; dy: number; rot: number };
 
-function storyboard(home: number, away: number, origin: -1 | 1): Pose[] {
+function storyboard(
+  home: number,
+  away: number,
+  homeY: number,
+  awayY: number,
+  origin: -1 | 1
+): Pose[] {
   const lane = 0.44 * S * origin;
-  const rise = (y: number) => -(y - SHELF_TOP_Y) * S;
+  const rise = (y: number) => -(y - homeY) * S;
 
   return [
     { at: 0, dx: 0, dy: 0, rot: 0 },
     { at: 0.09, dx: 0, dy: 0, rot: 0 },
-    { at: 0.22, dx: 0, dy: rise(1.82), rot: -6 * origin },
-    { at: 0.36, dx: lane - home, dy: rise(2.16), rot: -14 * origin },
-    { at: 0.5, dx: lane * 0.66 - home, dy: rise(2.1), rot: -18 * origin },
-    { at: 0.64, dx: -lane - home, dy: rise(2.2), rot: 9 * origin },
-    { at: 0.78, dx: away - home, dy: rise(1.82), rot: 4 * origin },
-    { at: 0.89, dx: away - home, dy: 0, rot: 0 },
-    { at: 1, dx: away - home, dy: 0, rot: 0 },
+    { at: 0.22, dx: 0, dy: rise(1.58), rot: -6 * origin },
+    { at: 0.36, dx: lane - home, dy: rise(1.9), rot: -14 * origin },
+    { at: 0.5, dx: lane * 0.66 - home, dy: rise(1.86), rot: -18 * origin },
+    { at: 0.64, dx: -lane - home, dy: rise(1.94), rot: 9 * origin },
+    { at: 0.78, dx: away - home, dy: rise(1.58), rot: 4 * origin },
+    { at: 0.89, dx: away - home, dy: rise(awayY), rot: 0 },
+    { at: 1, dx: away - home, dy: rise(awayY), rot: 0 },
   ];
 }
 
@@ -68,151 +75,227 @@ function keyframesFor(name: string, poses: Pose[]) {
   return `@keyframes ${name} { ${out.concat(back).join(" ")} }`;
 }
 
-/* ------------------------------------------------------------------ parts */
+/* ----------------------------------------------------------------- parts */
 
-function SpineRect({ spine, x }: { spine: Spine; x: number }) {
+function SpineRect({
+  spine,
+  x,
+  baseline,
+}: {
+  spine: Spine;
+  x: number;
+  baseline: number;
+}) {
   const w = spine.w * S;
   const h = spine.h * S;
 
   return (
-    <g
-      transform={`rotate(${((spine.tilt ?? 0) * 180) / Math.PI} ${x} ${SHELF_PX})`}
-    >
-      <rect
-        x={x - w / 2}
-        y={SHELF_PX - h}
-        width={w}
-        height={h}
-        rx={2}
-        fill={spine.color}
-      />
+    <g transform={`rotate(${((spine.tilt ?? 0) * 180) / Math.PI} ${x} ${baseline})`}>
+      <rect x={x - w / 2} y={baseline - h} width={w} height={h} rx={2} fill={spine.color} />
       {spine.band ? (
         <rect
           x={x - w * 0.25}
-          y={SHELF_PX - h * 0.72}
+          y={baseline - h * 0.72}
           width={w * 0.5}
           height={2.5}
           rx={1.25}
-          fill={PALETTE.lampCore}
-          opacity={0.85}
+          fill="#FFFFFF"
+          opacity={0.75}
         />
       ) : null}
     </g>
   );
 }
 
-function Nook({
-  side,
-  spines,
-  clipId,
+function Stack({
+  books,
+  x,
+  baseline,
 }: {
-  side: -1 | 1;
-  spines: Spine[];
-  clipId: string;
+  books: FlatBook[];
+  x: number;
+  baseline: number;
 }) {
-  const { offsets, width } = useMemo(() => layoutRow(spines), [spines]);
-  const cx = side * SHELF_X * S;
-  const board = (width + 0.34) * S;
-
-  const arch = `M ${cx - ARCH_HALF} ${FLOOR_PX} L ${cx - ARCH_HALF} ${SPRING_Y} A ${ARCH_HALF} ${ARCH_HALF} 0 0 1 ${cx + ARCH_HALF} ${SPRING_Y} L ${cx + ARCH_HALF} ${FLOOR_PX} Z`;
+  // Cumulative heights, so each book sits on the one below it.
+  const placed = useMemo(
+    () =>
+      books.map((book, index) => {
+        const h = book.h * S;
+        const below = books
+          .slice(0, index)
+          .reduce((sum, other) => sum + other.h * S, 0);
+        return { book, y: baseline - below - h, w: book.w * S, h };
+      }),
+    [books, baseline]
+  );
 
   return (
     <g>
-      <clipPath id={clipId}>
-        <path d={arch} />
-      </clipPath>
-
-      <path d={arch} fill="url(#bs-wall)" />
-
-      <g clipPath={`url(#${clipId})`}>
-        {/* Floor of the nook. */}
-        <rect
-          x={cx - ARCH_HALF}
-          y={px(0.24)}
-          width={ARCH_HALF * 2}
-          height={FLOOR_PX - px(0.24)}
-          fill={PALETTE.floor}
-        />
-
-        {/* Reader, sitting out of focus under the lamp. */}
-        <g
-          opacity={0.115}
-          fill={PALETTE.silhouette}
-          transform={`translate(${cx + side * 0.52 * S} ${px(0.44)}) scale(${-side * 0.3} 0.3) translate(-160 -180)`}
-        >
-          <g transform="translate(96 176) rotate(-4)">
-            <rect x={-34} y={-80} width={62} height={224} rx={26} />
+      {placed.map(({ book, y, w, h }, index) => {
+        return (
+          <g key={index}>
+            <rect x={x - w / 2} y={y} width={w} height={h} rx={1.5} fill={book.color} />
+            <rect
+              x={x + w / 2 - 3}
+              y={y + h * 0.12}
+              width={3}
+              height={h * 0.76}
+              fill="#F4EEE2"
+            />
           </g>
-          <rect x={70} y={232} width={168} height={40} rx={18} />
-          <rect x={208} y={262} width={22} height={72} rx={10} />
-          <rect x={84} y={262} width={20} height={68} rx={9} />
-          <circle cx={150} cy={84} r={30} />
-          <g transform="translate(146 168) rotate(6)">
-            <rect x={-34} y={-62} width={74} height={130} rx={32} />
-          </g>
-          <rect x={150} y={210} width={96} height={34} rx={17} />
-          <rect x={214} y={232} width={30} height={62} rx={14} />
-          <g transform="translate(196 150) rotate(-19)">
-            <rect x={-46} y={-13} width={84} height={26} rx={12} />
-            <rect x={26} y={-34} width={16} height={66} rx={5} />
-          </g>
-        </g>
+        );
+      })}
+    </g>
+  );
+}
 
-        {/* Lamplight pooling on the back wall. */}
-        <ellipse
-          className="bs-bloom"
-          cx={cx}
-          cy={px(2.05)}
-          rx={120}
-          ry={112}
-          fill="url(#bs-pool)"
-        />
-      </g>
+/** A point and a tangent angle along a cubic bezier, for placing ivy leaves. */
+function onCurve(p: [number, number][], t: number) {
+  const u = 1 - t;
+  const at = (k: 0 | 1) =>
+    u * u * u * p[0][k] + 3 * u * u * t * p[1][k] + 3 * u * t * t * p[2][k] + t * t * t * p[3][k];
+  const slope = (k: 0 | 1) =>
+    3 * u * u * (p[1][k] - p[0][k]) +
+    6 * u * t * (p[2][k] - p[1][k]) +
+    3 * t * t * (p[3][k] - p[2][k]);
 
-      {/* Pendant lamp. */}
-      <line
-        x1={cx}
-        y1={px(3.6)}
-        x2={cx}
-        y2={px(2.86)}
-        stroke={PALETTE.shade}
-        strokeWidth={1.6}
-      />
+  return { x: at(0), y: at(1), angle: (Math.atan2(slope(1), slope(0)) * 180) / Math.PI };
+}
+
+function Ivy({ x, baseline }: { x: number; baseline: number }) {
+  const curve: [number, number][] = useMemo(
+    () => [
+      [x + 3, baseline - 8],
+      [x + 34, baseline + 34],
+      [x - 26, baseline + 74],
+      [x + 6, baseline + 124],
+    ],
+    [x, baseline]
+  );
+
+  const leaves = useMemo(
+    () =>
+      Array.from({ length: 10 }, (_, i) => {
+        const t = 0.1 + (0.9 * i) / 9;
+        const at = onCurve(curve, t);
+        return {
+          ...at,
+          side: i % 2 === 0 ? 1 : -1,
+          size: 9 * (1 - t * 0.45),
+          light: i % 3 === 0,
+        };
+      }),
+    [curve]
+  );
+
+  return (
+    <g>
+      {/* Pot. */}
+      <rect x={x - 9} y={baseline - 16} width={18} height={16} rx={3} fill={PALETTE.terracotta} />
+      <rect x={x - 10.5} y={baseline - 19} width={21} height={4} rx={1.5} fill="#A8552F" />
+
+      {/* Trailing vine. */}
       <path
-        d={`M ${cx} ${px(2.86)} L ${cx + 18} ${px(2.5)} L ${cx - 18} ${px(2.5)} Z`}
-        fill={PALETTE.shade}
+        d={`M ${curve[0][0]} ${curve[0][1]} C ${curve[1][0]} ${curve[1][1]}, ${curve[2][0]} ${curve[2][1]}, ${curve[3][0]} ${curve[3][1]}`}
+        fill="none"
+        stroke={PALETTE.stem}
+        strokeWidth={2}
+        strokeLinecap="round"
       />
-      <circle
-        className="bs-bloom"
-        cx={cx}
-        cy={px(2.46)}
-        r={26}
-        fill="url(#bs-pool)"
-      />
-      <circle cx={cx} cy={px(2.48)} r={5} fill={PALETTE.lampCore} />
+      {leaves.map((leaf, index) => (
+        <g
+          key={index}
+          transform={`translate(${leaf.x} ${leaf.y}) rotate(${leaf.angle + leaf.side * 60})`}
+          fill={leaf.light ? PALETTE.leafLight : PALETTE.leaf}
+        >
+          <ellipse cx={leaf.size * 0.9} cy={0} rx={leaf.size} ry={leaf.size * 0.68} />
+          <path
+            d={`M ${leaf.size * 1.85} 0 L ${leaf.size * 1.15} ${leaf.size * 0.42} L ${leaf.size * 1.15} ${-leaf.size * 0.42} Z`}
+          />
+        </g>
+      ))}
+    </g>
+  );
+}
 
-      {/* Shelf. */}
-      <rect
-        x={cx - board / 2}
-        y={SHELF_PX}
-        width={board}
-        height={6}
-        rx={3}
-        fill={PALETTE.wood}
+function Lamp({ x, baseline }: { x: number; baseline: number }) {
+  return (
+    <g>
+      <circle className="bs-lamp" cx={x} cy={baseline - 22} r={30} fill="url(#bs-warm)" />
+      <rect x={x - 9} y={baseline - 4} width={18} height={4} rx={2} fill={PALETTE.plumDeep} />
+      <rect x={x - 1.4} y={baseline - 24} width={2.8} height={21} fill={PALETTE.plumDeep} />
+      <path
+        d={`M ${x - 12} ${baseline - 23} L ${x + 12} ${baseline - 23} L ${x + 8} ${baseline - 38} L ${x - 8} ${baseline - 38} Z`}
+        fill={PALETTE.plum}
       />
-      <rect
-        x={cx - board / 2}
-        y={SHELF_PX + 6}
-        width={board}
-        height={2.5}
-        fill={PALETTE.woodDark}
-        opacity={0.7}
+    </g>
+  );
+}
+
+function ShelfUnit({
+  side,
+  shelf,
+  spines,
+  stack,
+  prop,
+}: {
+  side: -1 | 1;
+  shelf: (typeof SHELVES)["left"] | (typeof SHELVES)["right"];
+  spines: Spine[];
+  stack: FlatBook[];
+  prop: "ivy" | "lamp";
+}) {
+  const { offsets } = useMemo(() => layoutRow(spines), [spines]);
+  const cx = shelf.x * S;
+  const baseline = px(shelf.top);
+  const propX = cx + side * PROP_X * S;
+
+  return (
+    <g>
+      {/* Shadows under the board. */}
+      <ellipse cx={cx} cy={baseline + 22} rx={BOARD_PX * 0.55} ry={22} fill="url(#bs-shadow)" opacity={0.7} />
+      <ellipse
+        className="bs-wash"
+        cx={cx}
+        cy={baseline + 13}
+        rx={BOARD_PX * 0.36}
+        ry={11}
+        fill="url(#bs-shadow)"
+        opacity={0.8}
       />
+
+      {/* Board, front edge and brackets. */}
+      <rect x={cx - BOARD_PX / 2} y={baseline} width={BOARD_PX} height={6} rx={2.5} fill={shelf.wood} />
+      <rect x={cx - BOARD_PX / 2} y={baseline + 5} width={BOARD_PX} height={2.5} fill={shelf.edge} opacity={0.8} />
+      {[-1, 1].map((bracket) => (
+        <rect
+          key={bracket}
+          x={cx + bracket * (BOARD_PX / 2 - 0.5 * S) - 3}
+          y={baseline + 7}
+          width={6}
+          height={11}
+          rx={1.5}
+          fill={shelf.edge}
+        />
+      ))}
 
       {spines.map((spine, index) =>
         index === HERO_INDEX ? null : (
-          <SpineRect key={index} spine={spine} x={cx + offsets[index] * S} />
+          <SpineRect
+            key={index}
+            spine={spine}
+            x={cx + offsets[index] * S}
+            baseline={baseline}
+          />
         )
+      )}
+
+      <Stack books={stack} x={cx - side * PROP_X * S} baseline={baseline} />
+
+      {prop === "ivy" ? (
+        <Ivy x={propX} baseline={baseline} />
+      ) : (
+        <Lamp x={propX} baseline={baseline} />
       )}
     </g>
   );
@@ -224,21 +307,27 @@ export default function BookSwapStatic() {
   const left = useMemo(() => layoutRow(LEFT_SPINES), []);
   const right = useMemo(() => layoutRow(RIGHT_SPINES), []);
 
-  const leftHome = (-SHELF_X + left.offsets[HERO_INDEX]) * S;
-  const rightHome = (SHELF_X + right.offsets[HERO_INDEX]) * S;
-  const leftAway = (SHELF_X + right.offsets[HERO_INDEX]) * S;
-  const rightAway = (-SHELF_X + left.offsets[HERO_INDEX]) * S;
+  const leftHome = (SHELVES.left.x + left.offsets[HERO_INDEX]) * S;
+  const rightHome = (SHELVES.right.x + right.offsets[HERO_INDEX]) * S;
+  const leftAway = (SHELVES.right.x + right.offsets[HERO_INDEX]) * S;
+  const rightAway = (SHELVES.left.x + left.offsets[HERO_INDEX]) * S;
 
   const css = useMemo(
     () =>
       [
-        keyframesFor("bs-left", storyboard(leftHome, leftAway, -1)),
-        keyframesFor("bs-right", storyboard(rightHome, rightAway, 1)),
+        keyframesFor(
+          "bs-left",
+          storyboard(leftHome, leftAway, SHELVES.left.top, SHELVES.right.top, -1)
+        ),
+        keyframesFor(
+          "bs-right",
+          storyboard(rightHome, rightAway, SHELVES.right.top, SHELVES.left.top, 1)
+        ),
       ].join(" "),
     [leftHome, leftAway, rightHome, rightAway]
   );
 
-  const viewWidth = (SHELF_X * S + ARCH_HALF + 16) * 2;
+  const halfWidth = 3.95 * S;
 
   return (
     <div
@@ -247,27 +336,31 @@ export default function BookSwapStatic() {
     >
       <style>{`
         ${css}
-        @keyframes bs-bloom {
-          0%, 38%   { opacity: 0.42; }
-          47%       { opacity: 0.95; }
-          62%, 88%  { opacity: 0.42; }
-          97%       { opacity: 0.95; }
-          100%      { opacity: 0.55; }
+        @keyframes bs-wash {
+          0%, 38%   { opacity: 0.5; }
+          47%       { opacity: 0.9; }
+          62%, 88%  { opacity: 0.5; }
+          97%       { opacity: 0.9; }
+          100%      { opacity: 0.6; }
+        }
+        @keyframes bs-lamp {
+          0%, 100% { opacity: 0.75; }
+          50%      { opacity: 0.95; }
         }
         @keyframes bs-meeting {
-          0%, 16%  { opacity: 0; transform: scale(0.7); }
-          25%      { opacity: 0.75; transform: scale(1); }
-          32%      { opacity: 0; transform: scale(0.7); }
-          66%      { opacity: 0; transform: scale(0.7); }
-          75%      { opacity: 0.75; transform: scale(1); }
-          84%, 100%{ opacity: 0; transform: scale(0.7); }
+          0%, 16%   { opacity: 0; transform: scale(0.7); }
+          25%       { opacity: 0.8; transform: scale(1); }
+          32%, 66%  { opacity: 0; transform: scale(0.7); }
+          75%       { opacity: 0.8; transform: scale(1); }
+          84%, 100% { opacity: 0; transform: scale(0.7); }
         }
         .bs-traveller {
           animation: 24s linear infinite;
           transform-box: fill-box;
           transform-origin: center bottom;
         }
-        .bs-bloom { animation: bs-bloom 24s ease-in-out infinite; opacity: 0.42; }
+        .bs-wash { animation: bs-wash 24s ease-in-out infinite; }
+        .bs-lamp { animation: bs-lamp 6s ease-in-out infinite; opacity: 0.75; }
         .bs-meeting {
           animation: bs-meeting 24s ease-in-out infinite;
           transform-box: fill-box;
@@ -275,52 +368,58 @@ export default function BookSwapStatic() {
           opacity: 0;
         }
         @media (prefers-reduced-motion: reduce) {
-          .bs-traveller, .bs-bloom, .bs-meeting { animation: none !important; }
+          .bs-traveller, .bs-wash, .bs-lamp, .bs-meeting { animation: none !important; }
         }
       `}</style>
 
       <svg
-        viewBox={`${-viewWidth / 2} -6 ${viewWidth} ${FLOOR_PX + 14}`}
+        viewBox={`${-halfWidth} 0 ${halfWidth * 2} ${px(BOTTOM_Y)}`}
         preserveAspectRatio="xMidYMid meet"
         className="w-full h-full"
         role="presentation"
       >
         <defs>
-          <linearGradient id="bs-wall" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={PALETTE.wallTop} />
-            <stop offset="62%" stopColor={PALETTE.wallBottom} />
-            <stop offset="100%" stopColor={PALETTE.floor} />
-          </linearGradient>
+          <radialGradient id="bs-shadow">
+            <stop offset="0%" stopColor={PALETTE.shadow} stopOpacity={0.42} />
+            <stop offset="60%" stopColor={PALETTE.shadow} stopOpacity={0.14} />
+            <stop offset="100%" stopColor={PALETTE.shadow} stopOpacity={0} />
+          </radialGradient>
 
-          <radialGradient id="bs-pool">
-            <stop offset="0%" stopColor={PALETTE.lamp} stopOpacity={0.72} />
-            <stop offset="45%" stopColor={PALETTE.lamp} stopOpacity={0.26} />
-            <stop offset="100%" stopColor={PALETTE.lamp} stopOpacity={0} />
+          <radialGradient id="bs-warm">
+            <stop offset="0%" stopColor={PALETTE.lampWarm} stopOpacity={0.85} />
+            <stop offset="55%" stopColor={PALETTE.lampWarm} stopOpacity={0.22} />
+            <stop offset="100%" stopColor={PALETTE.lampWarm} stopOpacity={0} />
           </radialGradient>
 
           <radialGradient id="bs-spark">
-            <stop offset="0%" stopColor={PALETTE.lampCore} stopOpacity={0.9} />
-            <stop offset="100%" stopColor={PALETTE.lampCore} stopOpacity={0} />
+            <stop offset="0%" stopColor="#FFF3DE" stopOpacity={0.95} />
+            <stop offset="100%" stopColor="#FFF3DE" stopOpacity={0} />
           </radialGradient>
         </defs>
 
-        <Nook side={-1} spines={LEFT_SPINES} clipId="bs-clip-left" />
-        <Nook side={1} spines={RIGHT_SPINES} clipId="bs-clip-right" />
-
-        {/* The light that gathers between the books as they meet. */}
-        <circle
-          className="bs-meeting"
-          cx={0}
-          cy={px(2.14)}
-          r={54}
-          fill="url(#bs-spark)"
+        <ShelfUnit
+          side={-1}
+          shelf={SHELVES.left}
+          spines={LEFT_SPINES}
+          stack={LEFT_STACK}
+          prop="ivy"
+        />
+        <ShelfUnit
+          side={1}
+          shelf={SHELVES.right}
+          spines={RIGHT_SPINES}
+          stack={RIGHT_STACK}
+          prop="lamp"
         />
 
+        {/* The light that gathers between the books as they meet. */}
+        <circle className="bs-meeting" cx={0} cy={px(1.9)} r={52} fill="url(#bs-spark)" />
+
         <g className="bs-traveller" style={{ animationName: "bs-left" }}>
-          <SpineRect spine={HERO_LEFT} x={leftHome} />
+          <SpineRect spine={HERO_LEFT} x={leftHome} baseline={px(SHELVES.left.top)} />
         </g>
         <g className="bs-traveller" style={{ animationName: "bs-right" }}>
-          <SpineRect spine={HERO_RIGHT} x={rightHome} />
+          <SpineRect spine={HERO_RIGHT} x={rightHome} baseline={px(SHELVES.right.top)} />
         </g>
       </svg>
     </div>

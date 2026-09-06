@@ -5,46 +5,45 @@ import * as THREE from "three";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { PerspectiveCamera, RoundedBox } from "@react-three/drei";
 import {
+  BOARD_WIDTH,
   BOOK_DEPTH,
   CYCLE_SECONDS,
+  type FlatBook,
   HERO_INDEX,
   HERO_LEFT,
   HERO_RIGHT,
   LEFT_SPINES,
+  LEFT_STACK,
   PALETTE,
+  PROP_X,
   RIGHT_SPINES,
-  SHELF_TOP_Y,
-  SHELF_X,
+  RIGHT_STACK,
   SHELF_Z,
+  SHELVES,
   type Spine,
   bloomAt,
   layoutRow,
   meetingAt,
   smoothstep,
 } from "./scene-config";
-import {
-  makeArchTexture,
-  makeGlowTexture,
-  makeSilhouetteTexture,
-} from "./textures";
+import { makeGlowTexture, makeIvyTexture } from "./textures";
 
 const CAMERA_FOV = 34;
-const FRAME_HALF_WIDTH = 4.35;
-const FRAME_HALF_HEIGHT = 2.06;
+const FRAME_HALF_WIDTH = 3.85;
+const FRAME_HALF_HEIGHT = 1.52;
 /** Vertical centre of the composition — the camera looks straight at it. */
-const LOOK_Y = 1.6;
-/** The pendant hangs on the outer side, leaving the books a clear flight path. */
-const LAMP_X = 0.74;
+const LOOK_Y = 1.68;
 
 /* ------------------------------------------------------------------ book  */
 
-type BookProps = {
+/** A book standing on its shelf, spine out. */
+function Book({
+  spine,
+  position = [0, 0, 0],
+}: {
   spine: Spine;
   position?: [number, number, number];
-};
-
-/** A book standing on its shelf, spine out. */
-function Book({ spine, position = [0, 0, 0] }: BookProps) {
+}) {
   return (
     <group position={position} rotation={[0, 0, spine.tilt ?? 0]}>
       <RoundedBox
@@ -65,53 +64,187 @@ function Book({ spine, position = [0, 0, 0] }: BookProps) {
         <boxGeometry
           args={[spine.w * 0.78, spine.h * 0.93, BOOK_DEPTH * 1.03]}
         />
-        <meshStandardMaterial color="#F6EEDC" roughness={0.98} />
+        <meshStandardMaterial color="#F4EEE2" roughness={0.98} />
       </mesh>
 
       {spine.band ? (
         <mesh position={[0, spine.h * 0.7, BOOK_DEPTH / 2 + 0.002]}>
-          <planeGeometry args={[spine.w * 0.5, 0.035]} />
-          <meshBasicMaterial color={PALETTE.lampCore} transparent opacity={0.8} />
+          <planeGeometry args={[spine.w * 0.5, 0.032]} />
+          <meshBasicMaterial color="#FFFFFF" transparent opacity={0.75} />
         </mesh>
       ) : null}
     </group>
   );
 }
 
-/* ------------------------------------------------------------------ nook  */
+/** A few books lying flat, the way they end up on a real shelf. */
+function FlatStack({
+  books,
+  position,
+}: {
+  books: FlatBook[];
+  position: [number, number, number];
+}) {
+  // Cumulative heights, so each book sits on the one below it.
+  const placed = useMemo(
+    () =>
+      books.map((book, index) => ({
+        book,
+        y: books.slice(0, index).reduce((sum, below) => sum + below.h, 0) + book.h / 2,
+      })),
+    [books]
+  );
 
-type NookProps = {
-  /** -1 for the left nook, 1 for the right one. */
-  side: -1 | 1;
-  spines: Spine[];
-  arch: THREE.Texture;
-  silhouette: THREE.Texture;
+  return (
+    <group position={position}>
+      {placed.map(({ book, y }, index) => {
+        return (
+          <group key={index} position={[0, y, 0]} rotation={[0, book.skew, 0]}>
+            <RoundedBox args={[book.w, book.h, book.d]} radius={0.012} smoothness={3}>
+              <meshStandardMaterial color={book.color} roughness={0.88} />
+            </RoundedBox>
+            {/* The page edge, so the stack reads as books and not as blocks. */}
+            <mesh position={[book.w * 0.5 - 0.012, 0, 0]}>
+              <boxGeometry args={[0.02, book.h * 0.82, book.d * 0.94]} />
+              <meshStandardMaterial color="#F4EEE2" roughness={0.98} />
+            </mesh>
+          </group>
+        );
+      })}
+    </group>
+  );
+}
+
+/** Potted ivy, trailing over the edge of the shelf. */
+function Ivy({
+  ivy,
+  position,
+}: {
+  ivy: THREE.Texture;
+  position: [number, number, number];
+}) {
+  return (
+    <group position={position}>
+      <RoundedBox args={[0.26, 0.24, 0.26]} radius={0.03} smoothness={3} position={[0, 0.12, 0]}>
+        <meshStandardMaterial color={PALETTE.terracotta} roughness={0.9} />
+      </RoundedBox>
+      <mesh position={[0, 0.245, 0]}>
+        <boxGeometry args={[0.28, 0.04, 0.28]} />
+        <meshStandardMaterial color="#A8552F" roughness={0.9} />
+      </mesh>
+
+      {/* The vine itself, painted and hung just in front of the shelf edge. */}
+      <mesh position={[0.03, -0.3, 0.3]}>
+        <planeGeometry args={[0.86, 1.6]} />
+        <meshBasicMaterial map={ivy} transparent depthWrite={false} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+/** A small plum table lamp — the only real light in the right-hand room. */
+function PlumLamp({
+  glow,
+  position,
+  bloom,
+}: {
   glow: THREE.Texture;
-  /** Colour this nook takes on when it receives a book, per cycle parity. */
+  position: [number, number, number];
+  bloom: React.RefObject<number>;
+}) {
+  const light = useRef<THREE.PointLight>(null);
+  const halo = useRef<THREE.Mesh>(null);
+
+  useFrame(({ clock }) => {
+    const breath = 0.96 + Math.sin(clock.getElapsedTime() * 0.7) * 0.04;
+    const swell = 1 + (bloom.current ?? 0) * 1.4;
+
+    if (light.current) light.current.intensity = 1.5 * breath * swell;
+    if (halo.current) {
+      const material = halo.current.material as THREE.MeshBasicMaterial;
+      material.opacity = 0.34 * breath * swell;
+    }
+  });
+
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.025, 0]}>
+        <cylinderGeometry args={[0.12, 0.14, 0.05, 20]} />
+        <meshStandardMaterial color={PALETTE.plumDeep} roughness={0.7} />
+      </mesh>
+      <mesh position={[0, 0.2, 0]}>
+        <cylinderGeometry args={[0.018, 0.018, 0.32, 12]} />
+        <meshStandardMaterial color={PALETTE.plumDeep} roughness={0.6} />
+      </mesh>
+      <mesh position={[0, 0.47, 0]}>
+        <cylinderGeometry args={[0.12, 0.19, 0.24, 26, 1, true]} />
+        <meshStandardMaterial
+          color={PALETTE.plum}
+          roughness={0.75}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      <mesh position={[0, 0.36, 0]}>
+        <sphereGeometry args={[0.06, 12, 12]} />
+        <meshBasicMaterial color={PALETTE.lampWarm} toneMapped={false} />
+      </mesh>
+
+      <mesh ref={halo} position={[0, 0.3, 0.06]} scale={[1.5, 1.5, 1]}>
+        <planeGeometry args={[1, 1]} />
+        <meshBasicMaterial
+          map={glow}
+          color={PALETTE.lampWarm}
+          transparent
+          opacity={0.34}
+          blending={THREE.AdditiveBlending}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+
+      <pointLight
+        ref={light}
+        position={[0, 0.34, 0.16]}
+        intensity={1.5}
+        distance={3.4}
+        decay={1.8}
+        color={PALETTE.lampWarm}
+      />
+    </group>
+  );
+}
+
+/* ----------------------------------------------------------------- shelf  */
+
+type ShelfProps = {
+  /** -1 for the left shelf, 1 for the right one. */
+  side: -1 | 1;
+  shelf: (typeof SHELVES)["left"] | (typeof SHELVES)["right"];
+  spines: Spine[];
+  stack: FlatBook[];
+  prop: "ivy" | "lamp";
+  ivy: THREE.Texture;
+  glow: THREE.Texture;
+  /** Colour this shelf takes on when it receives a book, per cycle parity. */
   arriving: [string, string];
 };
 
-/**
- * One reading nook: a painted alcove, a pendant lamp, a shelf, and a reader
- * sitting just out of focus behind it. The lamp swells and takes on the colour
- * of the arriving book as a swap completes.
- */
-function Nook({
+function Shelf({
   side,
+  shelf,
   spines,
-  arch,
-  silhouette,
+  stack,
+  prop,
+  ivy,
   glow,
   arriving,
-}: NookProps) {
-  const { offsets, width } = useMemo(() => layoutRow(spines), [spines]);
-  const board = width + 0.34;
+}: ShelfProps) {
+  const { offsets } = useMemo(() => layoutRow(spines), [spines]);
 
-  const lamp = useRef<THREE.PointLight>(null);
-  const wallGlow = useRef<THREE.Mesh>(null);
-  const bulbGlow = useRef<THREE.Mesh>(null);
+  const wash = useRef<THREE.Mesh>(null);
+  const bloom = useRef(0);
 
-  const warm = useMemo(() => new THREE.Color(PALETTE.lamp), []);
+  const base = useMemo(() => new THREE.Color(PALETTE.shadow), []);
   const accents = useMemo(
     () => arriving.map((hex) => new THREE.Color(hex)),
     [arriving]
@@ -123,139 +256,81 @@ function Nook({
     const cycle = Math.floor(elapsed / CYCLE_SECONDS);
     const t = (elapsed % CYCLE_SECONDS) / CYCLE_SECONDS;
 
-    const bloom = bloomAt(t);
-    // A slow breath in the lamp, so the nook is never completely still.
-    const breath = 0.96 + Math.sin(elapsed * 0.6 + side) * 0.04;
-    const accent = accents[cycle % accents.length];
+    bloom.current = bloomAt(t);
 
-    scratch.copy(warm).lerp(accent, bloom * 0.55);
-
-    if (lamp.current) {
-      lamp.current.intensity = (2.6 + bloom * 3.4) * breath;
-      lamp.current.color.copy(scratch);
-    }
-
-    if (wallGlow.current) {
-      const material = wallGlow.current.material as THREE.MeshBasicMaterial;
-      material.opacity = (0.3 + bloom * 0.42) * breath;
+    if (wash.current) {
+      const material = wash.current.material as THREE.MeshBasicMaterial;
+      const accent = accents[cycle % accents.length];
+      scratch.copy(base).lerp(accent, 0.35 + bloom.current * 0.5);
       material.color.copy(scratch);
-      const scale = 1 + bloom * 0.16;
-      wallGlow.current.scale.set(3.5 * scale, 3.2 * scale, 1);
-    }
-
-    if (bulbGlow.current) {
-      const material = bulbGlow.current.material as THREE.MeshBasicMaterial;
-      material.opacity = 0.55 + bloom * 0.35;
-      material.color.copy(scratch);
+      material.opacity = 0.3 + bloom.current * 0.34;
     }
   });
 
+  const top = shelf.top;
+
   return (
-    <group position={[side * SHELF_X, 0, 0]}>
-      {/* Painted alcove. */}
-      <mesh position={[0, 1.6, -1.3]}>
-        <planeGeometry args={[3.9, 4.05]} />
-        <meshBasicMaterial map={arch} transparent toneMapped={false} />
-      </mesh>
-
-      {/* Reader, sitting out of focus under the lamp. */}
-      <mesh position={[side * 0.52, 0.44, -1.18]} scale={[-side, 1, 1]}>
-        <planeGeometry args={[1.62, 1.82]} />
-        <meshBasicMaterial
-          map={silhouette}
-          color={PALETTE.silhouette}
-          transparent
-          opacity={0.115}
-          depthWrite={false}
-          toneMapped={false}
-        />
-      </mesh>
-
-      {/* Lamplight on the back wall. */}
-      <mesh ref={wallGlow} position={[side * LAMP_X, 1.95, -1.24]} scale={[3.5, 3.2, 1]}>
+    <group position={[shelf.x, 0, 0]}>
+      {/* Shadow the shelf drops onto the wall behind it. */}
+      <mesh position={[0, top - 0.26, SHELF_Z - 0.45]} scale={[BOARD_WIDTH * 0.78, 0.86, 1]}>
         <planeGeometry args={[1, 1]} />
         <meshBasicMaterial
           map={glow}
-          color={PALETTE.lamp}
+          color={PALETTE.shadow}
           transparent
-          opacity={0.3}
-          blending={THREE.AdditiveBlending}
+          opacity={0.24}
+          depthWrite={false}
+          toneMapped={false}
+        />
+      </mesh>
+      {/* The darker line right under the board. */}
+      <mesh ref={wash} position={[0, top - 0.13, SHELF_Z - 0.32]} scale={[BOARD_WIDTH * 0.56, 0.34, 1]}>
+        <planeGeometry args={[1, 1]} />
+        <meshBasicMaterial
+          map={glow}
+          color={PALETTE.shadow}
+          transparent
+          opacity={0.16}
           depthWrite={false}
           toneMapped={false}
         />
       </mesh>
 
-      {/* Pendant lamp. */}
-      <mesh position={[side * LAMP_X, 3.24, -0.15]}>
-        <cylinderGeometry args={[0.012, 0.012, 0.86, 6]} />
-        <meshBasicMaterial color={PALETTE.shade} />
-      </mesh>
-      <mesh position={[side * LAMP_X, 2.68, -0.15]}>
-        <coneGeometry args={[0.3, 0.36, 26, 1, true]} />
-        <meshStandardMaterial
-          color={PALETTE.shade}
-          roughness={0.7}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
-      <mesh position={[side * LAMP_X, 2.52, -0.15]}>
-        <sphereGeometry args={[0.085, 16, 16]} />
-        <meshBasicMaterial color={PALETTE.lampCore} toneMapped={false} />
-      </mesh>
-      <mesh ref={bulbGlow} position={[side * LAMP_X, 2.5, -0.14]} scale={[1.5, 1.5, 1]}>
-        <planeGeometry args={[1, 1]} />
-        <meshBasicMaterial
-          map={glow}
-          color={PALETTE.lamp}
-          transparent
-          opacity={0.55}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-          toneMapped={false}
-        />
-      </mesh>
-      <pointLight
-        ref={lamp}
-        position={[side * LAMP_X, 2.4, 0.2]}
-        intensity={2.6}
-        distance={7}
-        decay={1.6}
-        color={PALETTE.lamp}
-      />
-
-      {/* Shelf. */}
-      <mesh position={[0, 1.02, -0.62]} scale={[board * 1.1, 0.5, 1]}>
-        <planeGeometry args={[1, 1]} />
-        <meshBasicMaterial
-          map={glow}
-          color="#2A2130"
-          transparent
-          opacity={0.18}
-          depthWrite={false}
-          toneMapped={false}
-        />
-      </mesh>
+      {/* Board and its two brackets. */}
       <RoundedBox
-        args={[board, 0.1, 0.52]}
-        radius={0.03}
+        args={[BOARD_WIDTH, 0.09, 0.5]}
+        radius={0.025}
         smoothness={3}
-        position={[0, SHELF_TOP_Y - 0.05, SHELF_Z]}
+        position={[0, top - 0.045, SHELF_Z]}
       >
-        <meshStandardMaterial color={PALETTE.wood} roughness={0.9} />
+        <meshStandardMaterial color={shelf.wood} roughness={0.9} />
       </RoundedBox>
-      <mesh position={[0, SHELF_TOP_Y - 0.12, SHELF_Z + 0.27]}>
-        <boxGeometry args={[board, 0.05, 0.03]} />
-        <meshStandardMaterial color={PALETTE.woodDark} roughness={0.95} />
+      <mesh position={[0, top - 0.075, SHELF_Z + 0.25]}>
+        <boxGeometry args={[BOARD_WIDTH, 0.035, 0.02]} />
+        <meshStandardMaterial color={shelf.edge} roughness={0.95} />
       </mesh>
+      {[-1, 1].map((bracket) => (
+        <mesh
+          key={bracket}
+          position={[bracket * (BOARD_WIDTH / 2 - 0.5), top - 0.17, SHELF_Z - 0.04]}
+        >
+          <boxGeometry args={[0.1, 0.17, 0.34]} />
+          <meshStandardMaterial color={shelf.edge} roughness={0.9} />
+        </mesh>
+      ))}
 
       {spines.map((spine, index) =>
         index === HERO_INDEX ? null : (
-          <Book
-            key={index}
-            spine={spine}
-            position={[offsets[index], SHELF_TOP_Y, SHELF_Z]}
-          />
+          <Book key={index} spine={spine} position={[offsets[index], top, SHELF_Z]} />
         )
+      )}
+
+      <FlatStack books={stack} position={[-side * PROP_X, top, SHELF_Z]} />
+
+      {prop === "ivy" ? (
+        <Ivy ivy={ivy} position={[side * PROP_X, top, SHELF_Z]} />
+      ) : (
+        <PlumLamp glow={glow} position={[side * PROP_X, top, SHELF_Z]} bloom={bloom} />
       )}
     </group>
   );
@@ -266,47 +341,57 @@ function Nook({
 type Key = [t: number, x: number, y: number, z: number, ry: number, rz: number];
 
 /** The flight path of one book, as a short storyboard of poses. */
-function keyframes(from: number, to: number, origin: -1 | 1): Key[] {
+function keyframes(
+  from: number,
+  to: number,
+  fromY: number,
+  toY: number,
+  origin: -1 | 1
+): Key[] {
   const lane = 0.44 * origin;
   // One book crosses in front of the other, so they never intersect.
-  const crossZ = origin === -1 ? 1.02 : 0.06;
+  const crossZ = origin === -1 ? 0.95 : 0.05;
 
   return [
-    [0, from, SHELF_TOP_Y, SHELF_Z, 0, 0],
-    [0.09, from, SHELF_TOP_Y, SHELF_Z, 0, 0],
-    [0.22, from * 0.93, 1.82, 0.6, 0.18 * origin, -0.05 * origin],
-    [0.36, lane, 2.16, 0.6, 0.44 * origin, 0.04 * origin],
-    [0.5, lane * 0.66, 2.1, 0.6, 0.5 * origin, -0.04 * origin],
-    [0.64, -lane, 2.2, crossZ, -0.26 * origin, 0],
-    [0.78, to * 0.93, 1.82, 0.6, 0, 0.05 * origin],
-    [0.89, to, SHELF_TOP_Y, SHELF_Z, 0, 0],
-    [1, to, SHELF_TOP_Y, SHELF_Z, 0, 0],
+    [0, from, fromY, SHELF_Z, 0, 0],
+    [0.09, from, fromY, SHELF_Z, 0, 0],
+    [0.22, from * 0.93, 1.58, 0.5, 0.18 * origin, -0.05 * origin],
+    [0.36, lane, 1.9, 0.55, 0.44 * origin, 0.04 * origin],
+    [0.5, lane * 0.66, 1.86, 0.55, 0.5 * origin, -0.04 * origin],
+    [0.64, -lane, 1.94, crossZ, -0.26 * origin, 0],
+    [0.78, to * 0.93, 1.58, 0.5, 0, 0.05 * origin],
+    [0.89, to, toY, SHELF_Z, 0, 0],
+    [1, to, toY, SHELF_Z, 0, 0],
   ];
 }
-
-type TravellerProps = {
-  spine: Spine;
-  slotOffset: number;
-  otherSlotOffset: number;
-  /** -1 starts in the left nook, 1 starts in the right one. */
-  origin: -1 | 1;
-};
 
 function Traveller({
   spine,
   slotOffset,
   otherSlotOffset,
   origin,
-}: TravellerProps) {
+}: {
+  spine: Spine;
+  slotOffset: number;
+  otherSlotOffset: number;
+  /** -1 starts on the left shelf, 1 starts on the right one. */
+  origin: -1 | 1;
+}) {
   const group = useRef<THREE.Group>(null);
   const material = useRef<THREE.MeshStandardMaterial>(null);
 
-  const home = origin * SHELF_X + slotOffset;
-  const away = -origin * SHELF_X + otherSlotOffset;
+  const own = origin === -1 ? SHELVES.left : SHELVES.right;
+  const other = origin === -1 ? SHELVES.right : SHELVES.left;
+
+  const home = own.x + slotOffset;
+  const away = other.x + otherSlotOffset;
 
   const paths = useMemo(
-    () => [keyframes(home, away, origin), keyframes(away, home, origin)],
-    [home, away, origin]
+    () => [
+      keyframes(home, away, own.top, other.top, origin),
+      keyframes(away, home, other.top, own.top, origin),
+    ],
+    [home, away, own.top, other.top, origin]
   );
 
   useFrame(({ clock }) => {
@@ -317,7 +402,7 @@ function Traveller({
     const cycle = Math.floor(elapsed / CYCLE_SECONDS);
     const t = (elapsed % CYCLE_SECONDS) / CYCLE_SECONDS;
 
-    // Alternate cycles carry the book back, so the two nooks keep trading.
+    // Alternate cycles carry the book back, so the two shelves keep trading.
     const keys = paths[cycle % 2];
 
     let index = 0;
@@ -332,11 +417,15 @@ function Traveller({
       THREE.MathUtils.lerp(a[2], b[2], u),
       THREE.MathUtils.lerp(a[3], b[3], u)
     );
-    node.rotation.set(0, THREE.MathUtils.lerp(a[4], b[4], u), THREE.MathUtils.lerp(a[5], b[5], u));
+    node.rotation.set(
+      0,
+      THREE.MathUtils.lerp(a[4], b[4], u),
+      THREE.MathUtils.lerp(a[5], b[5], u)
+    );
 
     // Once it lands, the new book warms the shelf it joined.
     if (material.current) {
-      material.current.emissiveIntensity = bloomAt(t) * 0.45;
+      material.current.emissiveIntensity = bloomAt(t) * 0.4;
     }
   });
 
@@ -357,14 +446,12 @@ function Traveller({
         />
       </RoundedBox>
       <mesh position={[0, spine.h / 2, -0.015]}>
-        <boxGeometry
-          args={[spine.w * 0.78, spine.h * 0.93, BOOK_DEPTH * 1.03]}
-        />
-        <meshStandardMaterial color="#F6EEDC" roughness={0.98} />
+        <boxGeometry args={[spine.w * 0.78, spine.h * 0.93, BOOK_DEPTH * 1.03]} />
+        <meshStandardMaterial color="#F4EEE2" roughness={0.98} />
       </mesh>
       <mesh position={[0, spine.h * 0.7, BOOK_DEPTH / 2 + 0.002]}>
-        <planeGeometry args={[spine.w * 0.5, 0.035]} />
-        <meshBasicMaterial color={PALETTE.lampCore} transparent opacity={0.8} />
+        <planeGeometry args={[spine.w * 0.5, 0.032]} />
+        <meshBasicMaterial color="#FFFFFF" transparent opacity={0.75} />
       </mesh>
     </group>
   );
@@ -383,20 +470,20 @@ function MeetingGlow({ glow }: { glow: THREE.Texture }) {
     const presence = meetingAt(t);
 
     const material = node.material as THREE.MeshBasicMaterial;
-    material.opacity = presence * 0.72;
+    material.opacity = presence * 0.6;
     const scale = 0.55 + presence * 0.5;
     node.scale.set(scale, scale, 1);
 
-    if (light.current) light.current.intensity = presence * 2.6;
+    if (light.current) light.current.intensity = presence * 2.2;
   });
 
   return (
-    <group position={[0, 2.14, 0.42]}>
+    <group position={[0, 1.9, 0.38]}>
       <mesh ref={mesh}>
         <planeGeometry args={[2.4, 2.4]} />
         <meshBasicMaterial
           map={glow}
-          color={PALETTE.lampCore}
+          color="#FFF3DE"
           transparent
           opacity={0}
           blending={THREE.AdditiveBlending}
@@ -406,11 +493,11 @@ function MeetingGlow({ glow }: { glow: THREE.Texture }) {
       </mesh>
       <pointLight
         ref={light}
-        position={[0, 0.1, 1.1]}
+        position={[0, 0.1, 1]}
         intensity={0}
-        distance={4.5}
+        distance={4}
         decay={1.7}
-        color={PALETTE.lampCore}
+        color="#FFF3DE"
       />
     </group>
   );
@@ -422,20 +509,18 @@ function Scene() {
   const parallax = useRef<THREE.Group>(null);
   const { size } = useThree();
 
-  const arch = useMemo(() => makeArchTexture(), []);
-  const silhouette = useMemo(() => makeSilhouetteTexture(), []);
+  const ivy = useMemo(() => makeIvyTexture(), []);
   const glow = useMemo(() => makeGlowTexture(), []);
 
   useEffect(
     () => () => {
-      arch.dispose();
-      silhouette.dispose();
+      ivy.dispose();
       glow.dispose();
     },
-    [arch, silhouette, glow]
+    [ivy, glow]
   );
 
-  // Stand the camera back far enough that both nooks stay in frame, whatever
+  // Stand the camera back far enough that both shelves stay in frame, whatever
   // shape the hero panel happens to be.
   const distance = useMemo(() => {
     const aspect = size.width / Math.max(1, size.height);
@@ -458,14 +543,10 @@ function Scene() {
 
     node.rotation.y = THREE.MathUtils.lerp(
       node.rotation.y,
-      pointer.x * 0.12 + Math.sin(elapsed * 0.15) * 0.02,
+      pointer.x * 0.1 + Math.sin(elapsed * 0.15) * 0.015,
       damp
     );
-    node.rotation.x = THREE.MathUtils.lerp(
-      node.rotation.x,
-      -pointer.y * 0.045,
-      damp
-    );
+    node.rotation.x = THREE.MathUtils.lerp(node.rotation.x, -pointer.y * 0.04, damp);
   });
 
   return (
@@ -478,30 +559,31 @@ function Scene() {
         position={[0, LOOK_Y, distance]}
       />
 
-      {/* Dim, warm fill — the lamps are meant to do the work. */}
-      <ambientLight intensity={0.55} color="#FFF1DC" />
-      <hemisphereLight
-        intensity={0.35}
-        color="#FFE7C4"
-        groundColor={PALETTE.floor}
-      />
-      <directionalLight position={[0, 4, 6]} intensity={0.5} color="#FFF6E8" />
+      {/* Even, neutral daylight — the plum lamp is the only warm source. */}
+      <ambientLight intensity={1.15} color="#FFFDF8" />
+      <hemisphereLight intensity={0.5} color="#FFFFFF" groundColor="#D8D3C9" />
+      <directionalLight position={[-3, 5, 6]} intensity={1.15} color="#FFFBF2" />
+      <directionalLight position={[5, 2, 3]} intensity={0.35} color="#F0F2FF" />
 
       <group ref={parallax} position={[0, LOOK_Y, 0]}>
         <group position={[0, -LOOK_Y, 0]}>
-          <Nook
+          <Shelf
             side={-1}
+            shelf={SHELVES.left}
             spines={LEFT_SPINES}
-            arch={arch}
-            silhouette={silhouette}
+            stack={LEFT_STACK}
+            prop="ivy"
+            ivy={ivy}
             glow={glow}
             arriving={[HERO_RIGHT.color, HERO_LEFT.color]}
           />
-          <Nook
+          <Shelf
             side={1}
+            shelf={SHELVES.right}
             spines={RIGHT_SPINES}
-            arch={arch}
-            silhouette={silhouette}
+            stack={RIGHT_STACK}
+            prop="lamp"
+            ivy={ivy}
             glow={glow}
             arriving={[HERO_LEFT.color, HERO_RIGHT.color]}
           />
