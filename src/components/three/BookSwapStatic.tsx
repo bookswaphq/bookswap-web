@@ -150,7 +150,16 @@ function onCurve(p: [number, number][], t: number) {
     6 * u * t * (p[2][k] - p[1][k]) +
     3 * t * t * (p[3][k] - p[2][k]);
 
-  return { x: at(0), y: at(1), angle: (Math.atan2(slope(1), slope(0)) * 180) / Math.PI };
+  // Round every value that ends up in an attribute: Math.atan2 can differ in
+  // its last digit between the server's engine and the browser's, and React
+  // reports that as a hydration mismatch.
+  const round = (value: number) => Math.round(value * 1000) / 1000;
+
+  return {
+    x: round(at(0)),
+    y: round(at(1)),
+    angle: round((Math.atan2(slope(1), slope(0)) * 180) / Math.PI),
+  };
 }
 
 function Plant({ x, baseline }: { x: number; baseline: number }) {
@@ -172,7 +181,7 @@ function Plant({ x, baseline }: { x: number; baseline: number }) {
         return {
           ...at,
           side: i % 2 === 0 ? 1 : -1,
-          size: 9 * (1 - t * 0.45),
+          size: Math.round(9 * (1 - t * 0.45) * 100) / 100,
           light: i % 3 === 0,
         };
       }),
