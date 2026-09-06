@@ -38,6 +38,20 @@ export default function Navbar() {
     return () => observer.disconnect();
   }, []);
 
+  const backToHero = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) {
+      return;
+    }
+
+    if (!document.getElementById("hero")) return;
+
+    event.preventDefault();
+    setMenuOpen(false);
+
+    const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" });
+  };
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
@@ -62,7 +76,8 @@ export default function Navbar() {
         <div className="flex items-center justify-between gap-4 px-5 sm:px-6 py-3">
           <Link
             href="/"
-            aria-label="BookSwap home"
+            onClick={backToHero}
+            aria-label="BookSwap — back to the top"
             className="flex shrink-0 items-center gap-2"
           >
             <Image
