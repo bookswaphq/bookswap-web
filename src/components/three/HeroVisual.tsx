@@ -47,7 +47,7 @@ export default function HeroVisual() {
   }, []);
 
   return (
-    <div className="relative w-full h-[200px] sm:h-[264px] md:h-[326px] lg:h-[378px]">
+    <div className="relative w-full h-[150px] sm:h-[192px] md:h-[236px] lg:h-[272px]">
       {use3D ? <BookSwapScene /> : <BookSwapStatic />}
     </div>
   );

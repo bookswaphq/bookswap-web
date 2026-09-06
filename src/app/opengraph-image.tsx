@@ -6,7 +6,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 function getAppIconDataUri() {
-  const filePath = path.join(process.cwd(), "public", "app-icon.png");
+  const filePath = path.join(process.cwd(), "public", "bookswap-icon.png");
   const buffer = fs.readFileSync(filePath);
   return `data:image/png;base64,${buffer.toString("base64")}`;
 }
