@@ -1,9 +1,10 @@
 /**
  * Art direction and layout for the hero's two shelves.
  *
- * The two shelves are meant to read as two different rooms: different wood,
- * different height on the wall, and different things living on them — a trailing
- * ivy on one, a small plum lamp on the other. Kept free of three.js so the SVG
+ * The shelves belong to two different readers. The left one is a plant person:
+ * sage pot, trailing greenery, a framed mountain drawing, spines in natural
+ * greens. The right one is a reading corner: a plum lamp, a mug, books lying
+ * flat and a pair of glasses left on top. Kept free of three.js so the SVG
  * fallback can draw the same composition without the 3D bundle.
  */
 
@@ -15,15 +16,11 @@ export type Spine = {
   color: string;
   /** A lighter band, like a title strip across the spine. */
   band?: boolean;
-  /** Small lean, in radians, so a shelf reads as lived-in. */
+  /** Small lean, in radians — most books stand straight, a few don't. */
   tilt?: number;
 };
 
-/** Light neutral ground, warm woods, and one plum accent. */
 export const PALETTE = {
-  /** The panel the shelves float on. */
-  panel: "#F4F2ED",
-  panelDeep: "#EAE7E0",
   shadow: "#3B3540",
 
   /** Two different woods, one per room. */
@@ -32,23 +29,30 @@ export const PALETTE = {
   walnut: "#9A7150",
   walnutDark: "#7E5A3E",
 
-  /** Props. */
+  /** The plant shelf. */
+  sage: "#8FA98B",
+  sageDark: "#718B6E",
+  leaf: "#4E7A55",
+  leafLight: "#6D9A6B",
+  stem: "#3E5E45",
+  olive: "#6F7F4E",
+  moss: "#41654B",
+  forest: "#3F6B57",
+
+  /** The reading corner. */
   plum: "#5B3A6B",
   plumDeep: "#432A50",
   lampWarm: "#FFD9A6",
   terracotta: "#C0653C",
-  leaf: "#4E7A55",
-  leafLight: "#6D9A6B",
-  stem: "#3E5E45",
-
-  /** Books. */
-  brand: "#7F3DFF",
-  brandDeep: "#5F27C4",
-  ink: "#2A2130",
   mustard: "#D9A441",
-  forest: "#3F6B57",
+  brass: "#8C7A55",
+
+  /** Shared. */
+  brand: "#7F3DFF",
+  ink: "#2A2130",
   cream: "#EFE6D6",
-  slate: "#7C7686",
+  paper: "#F6EFE1",
+  tan: "#C3A06B",
 } as const;
 
 export const BOOK_DEPTH = 0.6;
@@ -58,16 +62,16 @@ export const SHELF_GAP = 0.05;
 export const CYCLE_SECONDS = 12;
 
 /** Width of each shelf board. */
-export const BOARD_WIDTH = 3.1;
-/** Where the props sit, measured from the middle of the board. */
-export const PROP_X = 1.2;
+export const BOARD_WIDTH = 3.3;
+/** Where the outer prop sits, measured from the middle of the board. */
+export const PROP_X = 1.3;
 /** Shelf boards sit a little behind the front of the scene. */
 export const SHELF_Z = -0.25;
 
 /** The two rooms. Different wood, different height, different things on them. */
 export const SHELVES = {
-  left: { x: -2.2, top: 1.3, wood: PALETTE.oak, edge: PALETTE.oakDark },
-  right: { x: 2.2, top: 1.06, wood: PALETTE.walnut, edge: PALETTE.walnutDark },
+  left: { x: -2.1, top: 1.3, wood: PALETTE.oak, edge: PALETTE.oakDark },
+  right: { x: 2.1, top: 1.06, wood: PALETTE.walnut, edge: PALETTE.walnutDark },
 } as const;
 
 /** The two travelling books — one from each shelf. */
@@ -85,40 +89,42 @@ export const HERO_RIGHT: Spine = {
   band: true,
 };
 
+/** Natural greens, warmed with tan and cream. */
 export const LEFT_SPINES: Spine[] = [
-  { w: 0.2, h: 0.74, color: PALETTE.plum, tilt: 0.02 },
-  { w: 0.15, h: 0.6, color: PALETTE.cream },
-  { w: 0.24, h: 0.82, color: PALETTE.ink, band: true },
+  { w: 0.2, h: 0.74, color: PALETTE.sage },
+  { w: 0.15, h: 0.6, color: PALETTE.cream, tilt: 0.05 },
+  { w: 0.24, h: 0.82, color: PALETTE.moss, band: true },
   HERO_LEFT,
-  { w: 0.17, h: 0.66, color: PALETTE.mustard },
-  { w: 0.22, h: 0.78, color: PALETTE.forest, tilt: -0.03 },
+  { w: 0.17, h: 0.66, color: PALETTE.tan, tilt: -0.06 },
+  { w: 0.22, h: 0.78, color: PALETTE.olive },
+  { w: 0.16, h: 0.62, color: PALETTE.forest },
 ];
 
+/** Warmer, darker — the reading corner. */
 export const RIGHT_SPINES: Spine[] = [
-  { w: 0.18, h: 0.7, color: PALETTE.forest },
+  { w: 0.18, h: 0.7, color: PALETTE.plum },
   { w: 0.22, h: 0.84, color: PALETTE.ink, tilt: 0.03 },
   { w: 0.15, h: 0.58, color: PALETTE.cream },
   HERO_RIGHT,
-  { w: 0.24, h: 0.78, color: PALETTE.plum, band: true },
-  { w: 0.2, h: 0.72, color: PALETTE.brandDeep },
+  { w: 0.24, h: 0.78, color: PALETTE.mustard, band: true },
 ];
 
 /** Index of the travelling book inside each row. */
 export const HERO_INDEX = 3;
 
-/** Books lying flat, stacked at the inner end of each shelf. */
+/** Books lying flat on the reading-corner shelf. */
 export type FlatBook = { w: number; h: number; d: number; color: string; skew: number };
 
-export const LEFT_STACK: FlatBook[] = [
-  { w: 0.54, h: 0.075, d: 0.4, color: PALETTE.forest, skew: 0.03 },
-  { w: 0.5, h: 0.065, d: 0.37, color: PALETTE.cream, skew: -0.05 },
-  { w: 0.44, h: 0.06, d: 0.34, color: PALETTE.mustard, skew: 0.02 },
+export const RIGHT_STACK: FlatBook[] = [
+  { w: 0.56, h: 0.075, d: 0.4, color: PALETTE.ink, skew: -0.02 },
+  { w: 0.5, h: 0.068, d: 0.37, color: PALETTE.plum, skew: 0.05 },
+  { w: 0.44, h: 0.06, d: 0.34, color: PALETTE.mustard, skew: -0.03 },
 ];
 
-export const RIGHT_STACK: FlatBook[] = [
-  { w: 0.52, h: 0.07, d: 0.39, color: PALETTE.ink, skew: -0.02 },
-  { w: 0.46, h: 0.065, d: 0.35, color: PALETTE.brand, skew: 0.045 },
-];
+/** Where the smaller props sit on each board. */
+export const LEFT_FRAME_X = 1.12;
+export const RIGHT_STACK_X = -1.22;
+export const RIGHT_MUG_X = -0.86;
 
 /** Lay a row of spines out left-to-right and return each one's centre x. */
 export function layoutRow(spines: Spine[]): { offsets: number[]; width: number } {

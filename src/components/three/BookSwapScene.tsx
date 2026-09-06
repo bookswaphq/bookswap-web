@@ -12,12 +12,14 @@ import {
   HERO_INDEX,
   HERO_LEFT,
   HERO_RIGHT,
+  LEFT_FRAME_X,
   LEFT_SPINES,
-  LEFT_STACK,
   PALETTE,
   PROP_X,
+  RIGHT_MUG_X,
   RIGHT_SPINES,
   RIGHT_STACK,
+  RIGHT_STACK_X,
   SHELF_Z,
   SHELVES,
   type Spine,
@@ -26,13 +28,13 @@ import {
   meetingAt,
   smoothstep,
 } from "./scene-config";
-import { makeGlowTexture, makeIvyTexture } from "./textures";
+import { makeGlowTexture, makeIvyTexture, makeMountainTexture } from "./textures";
 
 const CAMERA_FOV = 34;
-const FRAME_HALF_WIDTH = 3.85;
-const FRAME_HALF_HEIGHT = 1.52;
+const FRAME_HALF_WIDTH = 3.9;
+const FRAME_HALF_HEIGHT = 1.38;
 /** Vertical centre of the composition — the camera looks straight at it. */
-const LOOK_Y = 1.68;
+const LOOK_Y = 1.55;
 
 /* ------------------------------------------------------------------ book  */
 
@@ -52,18 +54,12 @@ function Book({
         smoothness={3}
         position={[0, spine.h / 2, 0]}
       >
-        <meshStandardMaterial
-          color={spine.color}
-          roughness={0.86}
-          metalness={0}
-        />
+        <meshStandardMaterial color={spine.color} roughness={0.86} metalness={0} />
       </RoundedBox>
 
       {/* Page block peeking out behind the spine. */}
       <mesh position={[0, spine.h / 2, -0.015]}>
-        <boxGeometry
-          args={[spine.w * 0.78, spine.h * 0.93, BOOK_DEPTH * 1.03]}
-        />
+        <boxGeometry args={[spine.w * 0.78, spine.h * 0.93, BOOK_DEPTH * 1.03]} />
         <meshStandardMaterial color="#F4EEE2" roughness={0.98} />
       </mesh>
 
@@ -97,26 +93,26 @@ function FlatStack({
 
   return (
     <group position={position}>
-      {placed.map(({ book, y }, index) => {
-        return (
-          <group key={index} position={[0, y, 0]} rotation={[0, book.skew, 0]}>
-            <RoundedBox args={[book.w, book.h, book.d]} radius={0.012} smoothness={3}>
-              <meshStandardMaterial color={book.color} roughness={0.88} />
-            </RoundedBox>
-            {/* The page edge, so the stack reads as books and not as blocks. */}
-            <mesh position={[book.w * 0.5 - 0.012, 0, 0]}>
-              <boxGeometry args={[0.02, book.h * 0.82, book.d * 0.94]} />
-              <meshStandardMaterial color="#F4EEE2" roughness={0.98} />
-            </mesh>
-          </group>
-        );
-      })}
+      {placed.map(({ book, y }, index) => (
+        <group key={index} position={[0, y, 0]} rotation={[0, book.skew, 0]}>
+          <RoundedBox args={[book.w, book.h, book.d]} radius={0.012} smoothness={3}>
+            <meshStandardMaterial color={book.color} roughness={0.88} />
+          </RoundedBox>
+          {/* The page edge, so the stack reads as books and not as blocks. */}
+          <mesh position={[book.w * 0.5 - 0.012, 0, 0]}>
+            <boxGeometry args={[0.02, book.h * 0.82, book.d * 0.94]} />
+            <meshStandardMaterial color="#F4EEE2" roughness={0.98} />
+          </mesh>
+        </group>
+      ))}
     </group>
   );
 }
 
-/** Potted ivy, trailing over the edge of the shelf. */
-function Ivy({
+/* ----------------------------------------------------- the plant shelf's props */
+
+/** A sage pot with something green trailing over the edge of the shelf. */
+function Plant({
   ivy,
   position,
 }: {
@@ -125,16 +121,17 @@ function Ivy({
 }) {
   return (
     <group position={position}>
-      <RoundedBox args={[0.26, 0.24, 0.26]} radius={0.03} smoothness={3} position={[0, 0.12, 0]}>
-        <meshStandardMaterial color={PALETTE.terracotta} roughness={0.9} />
-      </RoundedBox>
-      <mesh position={[0, 0.245, 0]}>
-        <boxGeometry args={[0.28, 0.04, 0.28]} />
-        <meshStandardMaterial color="#A8552F" roughness={0.9} />
+      <mesh position={[0, 0.13, 0]}>
+        <cylinderGeometry args={[0.145, 0.115, 0.26, 22]} />
+        <meshStandardMaterial color={PALETTE.sage} roughness={0.92} />
+      </mesh>
+      <mesh position={[0, 0.27, 0]}>
+        <cylinderGeometry args={[0.16, 0.155, 0.05, 22]} />
+        <meshStandardMaterial color={PALETTE.sageDark} roughness={0.92} />
       </mesh>
 
-      {/* The vine itself, painted and hung just in front of the shelf edge. */}
-      <mesh position={[0.03, -0.3, 0.3]}>
+      {/* The greenery itself, painted and hung just in front of the shelf edge. */}
+      <mesh position={[0.03, -0.42, 0.31]}>
         <planeGeometry args={[0.86, 1.6]} />
         <meshBasicMaterial map={ivy} transparent depthWrite={false} toneMapped={false} />
       </mesh>
@@ -142,7 +139,35 @@ function Ivy({
   );
 }
 
-/** A small plum table lamp — the only real light in the right-hand room. */
+/** A small framed drawing of a mountain, leaning back on the shelf. */
+function Frame({
+  picture,
+  position,
+}: {
+  picture: THREE.Texture;
+  position: [number, number, number];
+}) {
+  return (
+    <group position={position} rotation={[-0.13, -0.16, 0]}>
+      <RoundedBox
+        args={[0.52, 0.44, 0.035]}
+        radius={0.012}
+        smoothness={3}
+        position={[0, 0.22, 0]}
+      >
+        <meshStandardMaterial color={PALETTE.tan} roughness={0.85} />
+      </RoundedBox>
+      <mesh position={[0, 0.22, 0.021]}>
+        <planeGeometry args={[0.44, 0.36]} />
+        <meshBasicMaterial map={picture} toneMapped={false} />
+      </mesh>
+    </group>
+  );
+}
+
+/* ------------------------------------------------ the reading corner's props */
+
+/** A small plum table lamp — the only warm light in the scene. */
 function PlumLamp({
   glow,
   position,
@@ -214,6 +239,63 @@ function PlumLamp({
   );
 }
 
+/** A ceramic mug, left at the front of the shelf. */
+function Mug({ position, handle }: { position: [number, number, number]; handle: -1 | 1 }) {
+  return (
+    <group position={position}>
+      <mesh position={[0, 0.125, 0]}>
+        <cylinderGeometry args={[0.115, 0.098, 0.25, 22]} />
+        <meshStandardMaterial color={PALETTE.cream} roughness={0.55} />
+      </mesh>
+      <mesh position={[0, 0.245, 0]}>
+        <cylinderGeometry args={[0.092, 0.092, 0.02, 22]} />
+        <meshStandardMaterial color="#6B4A2E" roughness={0.5} />
+      </mesh>
+      <mesh position={[0, 0.05, 0]}>
+        <cylinderGeometry args={[0.118, 0.118, 0.038, 22]} />
+        <meshStandardMaterial color={PALETTE.plum} roughness={0.6} />
+      </mesh>
+      <mesh position={[handle * 0.13, 0.125, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.062, 0.018, 8, 20]} />
+        <meshStandardMaterial color={PALETTE.cream} roughness={0.55} />
+      </mesh>
+    </group>
+  );
+}
+
+/** Reading glasses, folded and leaning against the stack. */
+function Glasses({ position }: { position: [number, number, number] }) {
+  const metal = (
+    <meshStandardMaterial color={PALETTE.ink} roughness={0.4} metalness={0.25} />
+  );
+
+  return (
+    <group position={position} rotation={[-0.22, 0.24, 0.05]}>
+      {[-1, 1].map((side) => (
+        <mesh key={side} position={[side * 0.095, 0, 0]}>
+          <torusGeometry args={[0.082, 0.013, 8, 22]} />
+          {metal}
+        </mesh>
+      ))}
+      <mesh>
+        <boxGeometry args={[0.036, 0.013, 0.013]} />
+        {metal}
+      </mesh>
+      {/* Folded temples, tucked back behind the lenses. */}
+      {[-1, 1].map((side) => (
+        <mesh
+          key={side}
+          position={[side * 0.15, -0.01, -0.08]}
+          rotation={[0, side * 0.55, 0]}
+        >
+          <boxGeometry args={[0.012, 0.012, 0.18]} />
+          {metal}
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 /* ----------------------------------------------------------------- shelf  */
 
 type ShelfProps = {
@@ -221,9 +303,9 @@ type ShelfProps = {
   side: -1 | 1;
   shelf: (typeof SHELVES)["left"] | (typeof SHELVES)["right"];
   spines: Spine[];
-  stack: FlatBook[];
-  prop: "ivy" | "lamp";
+  room: "plants" | "corner";
   ivy: THREE.Texture;
+  picture: THREE.Texture;
   glow: THREE.Texture;
   /** Colour this shelf takes on when it receives a book, per cycle parity. */
   arriving: [string, string];
@@ -233,9 +315,9 @@ function Shelf({
   side,
   shelf,
   spines,
-  stack,
-  prop,
+  room,
   ivy,
+  picture,
   glow,
   arriving,
 }: ShelfProps) {
@@ -245,10 +327,7 @@ function Shelf({
   const bloom = useRef(0);
 
   const base = useMemo(() => new THREE.Color(PALETTE.shadow), []);
-  const accents = useMemo(
-    () => arriving.map((hex) => new THREE.Color(hex)),
-    [arriving]
-  );
+  const accents = useMemo(() => arriving.map((hex) => new THREE.Color(hex)), [arriving]);
   const scratch = useMemo(() => new THREE.Color(), []);
 
   useFrame(({ clock }) => {
@@ -271,8 +350,11 @@ function Shelf({
 
   return (
     <group position={[shelf.x, 0, 0]}>
-      {/* Shadow the shelf drops onto the wall behind it. */}
-      <mesh position={[0, top - 0.26, SHELF_Z - 0.45]} scale={[BOARD_WIDTH * 0.78, 0.86, 1]}>
+      {/* Shadow the shelf drops behind and below itself. */}
+      <mesh
+        position={[0, top - 0.26, SHELF_Z - 0.45]}
+        scale={[BOARD_WIDTH * 0.78, 0.86, 1]}
+      >
         <planeGeometry args={[1, 1]} />
         <meshBasicMaterial
           map={glow}
@@ -284,13 +366,17 @@ function Shelf({
         />
       </mesh>
       {/* The darker line right under the board. */}
-      <mesh ref={wash} position={[0, top - 0.13, SHELF_Z - 0.32]} scale={[BOARD_WIDTH * 0.56, 0.34, 1]}>
+      <mesh
+        ref={wash}
+        position={[0, top - 0.13, SHELF_Z - 0.32]}
+        scale={[BOARD_WIDTH * 0.56, 0.34, 1]}
+      >
         <planeGeometry args={[1, 1]} />
         <meshBasicMaterial
           map={glow}
           color={PALETTE.shadow}
           transparent
-          opacity={0.16}
+          opacity={0.3}
           depthWrite={false}
           toneMapped={false}
         />
@@ -325,12 +411,18 @@ function Shelf({
         )
       )}
 
-      <FlatStack books={stack} position={[-side * PROP_X, top, SHELF_Z]} />
-
-      {prop === "ivy" ? (
-        <Ivy ivy={ivy} position={[side * PROP_X, top, SHELF_Z]} />
+      {room === "plants" ? (
+        <>
+          <Plant ivy={ivy} position={[side * PROP_X, top, SHELF_Z]} />
+          <Frame picture={picture} position={[-side * LEFT_FRAME_X, top, SHELF_Z - 0.02]} />
+        </>
       ) : (
-        <PlumLamp glow={glow} position={[side * PROP_X, top, SHELF_Z]} bloom={bloom} />
+        <>
+          <PlumLamp glow={glow} position={[side * PROP_X, top, SHELF_Z]} bloom={bloom} />
+          <FlatStack books={RIGHT_STACK} position={[side * RIGHT_STACK_X, top, SHELF_Z]} />
+          <Glasses position={[side * (RIGHT_STACK_X + 0.02), top + 0.1, SHELF_Z + 0.27]} />
+          <Mug position={[side * RIGHT_MUG_X, top, SHELF_Z + 0.02]} handle={side} />
+        </>
       )}
     </group>
   );
@@ -355,11 +447,11 @@ function keyframes(
   return [
     [0, from, fromY, SHELF_Z, 0, 0],
     [0.09, from, fromY, SHELF_Z, 0, 0],
-    [0.22, from * 0.93, 1.58, 0.5, 0.18 * origin, -0.05 * origin],
-    [0.36, lane, 1.9, 0.55, 0.44 * origin, 0.04 * origin],
-    [0.5, lane * 0.66, 1.86, 0.55, 0.5 * origin, -0.04 * origin],
-    [0.64, -lane, 1.94, crossZ, -0.26 * origin, 0],
-    [0.78, to * 0.93, 1.58, 0.5, 0, 0.05 * origin],
+    [0.22, from * 0.93, 1.5, 0.5, 0.18 * origin, -0.05 * origin],
+    [0.36, lane, 1.78, 0.55, 0.44 * origin, 0.04 * origin],
+    [0.5, lane * 0.66, 1.74, 0.55, 0.5 * origin, -0.04 * origin],
+    [0.64, -lane, 1.82, crossZ, -0.26 * origin, 0],
+    [0.78, to * 0.93, 1.5, 0.5, 0, 0.05 * origin],
     [0.89, to, toY, SHELF_Z, 0, 0],
     [1, to, toY, SHELF_Z, 0, 0],
   ];
@@ -478,7 +570,7 @@ function MeetingGlow({ glow }: { glow: THREE.Texture }) {
   });
 
   return (
-    <group position={[0, 1.9, 0.38]}>
+    <group position={[0, 1.78, 0.38]}>
       <mesh ref={mesh}>
         <planeGeometry args={[2.4, 2.4]} />
         <meshBasicMaterial
@@ -510,18 +602,20 @@ function Scene() {
   const { size } = useThree();
 
   const ivy = useMemo(() => makeIvyTexture(), []);
+  const picture = useMemo(() => makeMountainTexture(), []);
   const glow = useMemo(() => makeGlowTexture(), []);
 
   useEffect(
     () => () => {
       ivy.dispose();
+      picture.dispose();
       glow.dispose();
     },
-    [ivy, glow]
+    [ivy, picture, glow]
   );
 
   // Stand the camera back far enough that both shelves stay in frame, whatever
-  // shape the hero panel happens to be.
+  // shape the hero happens to be.
   const distance = useMemo(() => {
     const aspect = size.width / Math.max(1, size.height);
     const halfFov = (CAMERA_FOV * Math.PI) / 360;
@@ -571,9 +665,9 @@ function Scene() {
             side={-1}
             shelf={SHELVES.left}
             spines={LEFT_SPINES}
-            stack={LEFT_STACK}
-            prop="ivy"
+            room="plants"
             ivy={ivy}
+            picture={picture}
             glow={glow}
             arriving={[HERO_RIGHT.color, HERO_LEFT.color]}
           />
@@ -581,9 +675,9 @@ function Scene() {
             side={1}
             shelf={SHELVES.right}
             spines={RIGHT_SPINES}
-            stack={RIGHT_STACK}
-            prop="lamp"
+            room="corner"
             ivy={ivy}
+            picture={picture}
             glow={glow}
             arriving={[HERO_LEFT.color, HERO_RIGHT.color]}
           />

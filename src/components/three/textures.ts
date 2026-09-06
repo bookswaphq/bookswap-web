@@ -119,6 +119,55 @@ export function makeIvyTexture() {
   });
 }
 
+/** A small framed mountain drawing, the kind brought back from a trip. */
+export function makeMountainTexture() {
+  return canvasTexture(320, 260, (ctx) => {
+    ctx.fillStyle = PALETTE.paper;
+    ctx.fillRect(0, 0, 320, 260);
+
+    // Sun.
+    ctx.fillStyle = "#E7C98B";
+    ctx.beginPath();
+    ctx.arc(226, 84, 30, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Far ridge.
+    ctx.fillStyle = PALETTE.sage;
+    ctx.beginPath();
+    ctx.moveTo(0, 208);
+    ctx.lineTo(96, 96);
+    ctx.lineTo(168, 168);
+    ctx.lineTo(232, 112);
+    ctx.lineTo(320, 208);
+    ctx.closePath();
+    ctx.fill();
+
+    // Near ridge, with a little snow on the peak.
+    ctx.fillStyle = PALETTE.moss;
+    ctx.beginPath();
+    ctx.moveTo(-10, 210);
+    ctx.lineTo(120, 118);
+    ctx.lineTo(258, 210);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = PALETTE.paper;
+    ctx.beginPath();
+    ctx.moveTo(120, 118);
+    ctx.lineTo(150, 140);
+    ctx.lineTo(136, 146);
+    ctx.lineTo(122, 138);
+    ctx.lineTo(108, 148);
+    ctx.lineTo(90, 140);
+    ctx.closePath();
+    ctx.fill();
+
+    // Ground line.
+    ctx.fillStyle = PALETTE.stem;
+    ctx.fillRect(0, 206, 320, 6);
+  });
+}
+
 /** Soft round falloff, used for glows and for the shadows under the shelves. */
 export function makeGlowTexture() {
   return canvasTexture(256, 256, (ctx) => {

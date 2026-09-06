@@ -7,12 +7,14 @@ import {
   HERO_INDEX,
   HERO_LEFT,
   HERO_RIGHT,
+  LEFT_FRAME_X,
   LEFT_SPINES,
-  LEFT_STACK,
   PALETTE,
   PROP_X,
+  RIGHT_MUG_X,
   RIGHT_SPINES,
   RIGHT_STACK,
+  RIGHT_STACK_X,
   SHELVES,
   type Spine,
   layoutRow,
@@ -20,16 +22,15 @@ import {
 
 /**
  * The same two shelves, drawn flat. This is what phones, reduced-motion
- * visitors and browsers without WebGL get — it carries the same story (two
- * books leave their shelves, meet in the middle and trade places) without
- * loading three.js.
+ * visitors and browsers without WebGL get — the same two rooms and the same
+ * story, without loading three.js.
  */
 
 /** Scene units → SVG units. */
 const S = 64;
 /** Scene y at the top of the frame; everything is measured down from here. */
-const TOP_Y = 3.05;
-const BOTTOM_Y = 0.16;
+const TOP_Y = 2.86;
+const BOTTOM_Y = 0.1;
 
 const px = (sceneY: number) => (TOP_Y - sceneY) * S;
 const BOARD_PX = BOARD_WIDTH * S;
@@ -51,11 +52,11 @@ function storyboard(
   return [
     { at: 0, dx: 0, dy: 0, rot: 0 },
     { at: 0.09, dx: 0, dy: 0, rot: 0 },
-    { at: 0.22, dx: 0, dy: rise(1.58), rot: -6 * origin },
-    { at: 0.36, dx: lane - home, dy: rise(1.9), rot: -14 * origin },
-    { at: 0.5, dx: lane * 0.66 - home, dy: rise(1.86), rot: -18 * origin },
-    { at: 0.64, dx: -lane - home, dy: rise(1.94), rot: 9 * origin },
-    { at: 0.78, dx: away - home, dy: rise(1.58), rot: 4 * origin },
+    { at: 0.22, dx: 0, dy: rise(1.5), rot: -6 * origin },
+    { at: 0.36, dx: lane - home, dy: rise(1.78), rot: -14 * origin },
+    { at: 0.5, dx: lane * 0.66 - home, dy: rise(1.74), rot: -18 * origin },
+    { at: 0.64, dx: -lane - home, dy: rise(1.82), rot: 9 * origin },
+    { at: 0.78, dx: away - home, dy: rise(1.5), rot: 4 * origin },
     { at: 0.89, dx: away - home, dy: rise(awayY), rot: 0 },
     { at: 1, dx: away - home, dy: rise(awayY), rot: 0 },
   ];
@@ -121,9 +122,7 @@ function Stack({
     () =>
       books.map((book, index) => {
         const h = book.h * S;
-        const below = books
-          .slice(0, index)
-          .reduce((sum, other) => sum + other.h * S, 0);
+        const below = books.slice(0, index).reduce((sum, other) => sum + other.h * S, 0);
         return { book, y: baseline - below - h, w: book.w * S, h };
       }),
     [books, baseline]
@@ -131,25 +130,17 @@ function Stack({
 
   return (
     <g>
-      {placed.map(({ book, y, w, h }, index) => {
-        return (
-          <g key={index}>
-            <rect x={x - w / 2} y={y} width={w} height={h} rx={1.5} fill={book.color} />
-            <rect
-              x={x + w / 2 - 3}
-              y={y + h * 0.12}
-              width={3}
-              height={h * 0.76}
-              fill="#F4EEE2"
-            />
-          </g>
-        );
-      })}
+      {placed.map(({ book, y, w, h }, index) => (
+        <g key={index}>
+          <rect x={x - w / 2} y={y} width={w} height={h} rx={1.5} fill={book.color} />
+          <rect x={x + w / 2 - 3} y={y + h * 0.12} width={3} height={h * 0.76} fill="#F4EEE2" />
+        </g>
+      ))}
     </g>
   );
 }
 
-/** A point and a tangent angle along a cubic bezier, for placing ivy leaves. */
+/** A point and a tangent angle along a cubic bezier, for placing leaves. */
 function onCurve(p: [number, number][], t: number) {
   const u = 1 - t;
   const at = (k: 0 | 1) =>
@@ -162,10 +153,10 @@ function onCurve(p: [number, number][], t: number) {
   return { x: at(0), y: at(1), angle: (Math.atan2(slope(1), slope(0)) * 180) / Math.PI };
 }
 
-function Ivy({ x, baseline }: { x: number; baseline: number }) {
+function Plant({ x, baseline }: { x: number; baseline: number }) {
   const curve: [number, number][] = useMemo(
     () => [
-      [x + 3, baseline - 8],
+      [x + 3, baseline - 10],
       [x + 34, baseline + 34],
       [x - 26, baseline + 74],
       [x + 6, baseline + 124],
@@ -190,11 +181,14 @@ function Ivy({ x, baseline }: { x: number; baseline: number }) {
 
   return (
     <g>
-      {/* Pot. */}
-      <rect x={x - 9} y={baseline - 16} width={18} height={16} rx={3} fill={PALETTE.terracotta} />
-      <rect x={x - 10.5} y={baseline - 19} width={21} height={4} rx={1.5} fill="#A8552F" />
+      {/* Sage pot. */}
+      <path
+        d={`M ${x - 9} ${baseline - 15} L ${x + 9} ${baseline - 15} L ${x + 7} ${baseline} L ${x - 7} ${baseline} Z`}
+        fill={PALETTE.sage}
+      />
+      <rect x={x - 10.5} y={baseline - 18.5} width={21} height={4} rx={1.5} fill={PALETTE.sageDark} />
 
-      {/* Trailing vine. */}
+      {/* Greenery trailing over the edge. */}
       <path
         d={`M ${curve[0][0]} ${curve[0][1]} C ${curve[1][0]} ${curve[1][1]}, ${curve[2][0]} ${curve[2][1]}, ${curve[3][0]} ${curve[3][1]}`}
         fill="none"
@@ -218,16 +212,67 @@ function Ivy({ x, baseline }: { x: number; baseline: number }) {
   );
 }
 
-function Lamp({ x, baseline }: { x: number; baseline: number }) {
+/** A small framed mountain drawing, leaning on the shelf. */
+function Frame({ x, baseline }: { x: number; baseline: number }) {
+  const w = 0.52 * S;
+  const h = 0.44 * S;
+  const top = baseline - h;
+
+  return (
+    <g transform={`rotate(-3 ${x} ${baseline})`}>
+      <rect x={x - w / 2} y={top} width={w} height={h} rx={3} fill={PALETTE.tan} />
+      <clipPath id="bs-frame-clip">
+        <rect x={x - w / 2 + 4} y={top + 4} width={w - 8} height={h - 8} rx={1.5} />
+      </clipPath>
+      <g clipPath="url(#bs-frame-clip)">
+        <rect x={x - w / 2 + 4} y={top + 4} width={w - 8} height={h - 8} fill={PALETTE.paper} />
+        <circle cx={x + w * 0.2} cy={top + h * 0.32} r={5} fill="#E7C98B" />
+        <path
+          d={`M ${x - w / 2} ${baseline} L ${x - w * 0.18} ${top + h * 0.35} L ${x + w * 0.04} ${top + h * 0.62} L ${x + w * 0.22} ${top + h * 0.42} L ${x + w / 2} ${baseline} Z`}
+          fill={PALETTE.sage}
+        />
+        <path
+          d={`M ${x - w / 2} ${baseline} L ${x - w * 0.06} ${top + h * 0.42} L ${x + w * 0.4} ${baseline} Z`}
+          fill={PALETTE.moss}
+        />
+      </g>
+    </g>
+  );
+}
+
+/** A ceramic mug at the front of the shelf. */
+function Mug({ x, baseline, handle }: { x: number; baseline: number; handle: -1 | 1 }) {
+  const w = 0.2 * S;
+  const h = 0.22 * S;
+
   return (
     <g>
-      <circle className="bs-lamp" cx={x} cy={baseline - 22} r={30} fill="url(#bs-warm)" />
-      <rect x={x - 9} y={baseline - 4} width={18} height={4} rx={2} fill={PALETTE.plumDeep} />
-      <rect x={x - 1.4} y={baseline - 24} width={2.8} height={21} fill={PALETTE.plumDeep} />
       <path
-        d={`M ${x - 12} ${baseline - 23} L ${x + 12} ${baseline - 23} L ${x + 8} ${baseline - 38} L ${x - 8} ${baseline - 38} Z`}
-        fill={PALETTE.plum}
+        d={`M ${x - w / 2} ${baseline - h} L ${x + w / 2} ${baseline - h} L ${x + w * 0.42} ${baseline} L ${x - w * 0.42} ${baseline} Z`}
+        fill={PALETTE.cream}
       />
+      <rect x={x - w * 0.46} y={baseline - 4} width={w * 0.92} height={3} fill={PALETTE.plum} />
+      <ellipse cx={x} cy={baseline - h} rx={w * 0.5} ry={2.6} fill="#6B4A2E" />
+      <path
+        d={`M ${x + (handle * w) / 2} ${baseline - h * 0.75} a 5.5 5.5 0 0 ${handle > 0 ? 1 : 0} 0 ${h * 0.45}`}
+        fill="none"
+        stroke={PALETTE.cream}
+        strokeWidth={3}
+      />
+    </g>
+  );
+}
+
+/** Reading glasses, folded and left on top of the stack. */
+function Glasses({ x, baseline }: { x: number; baseline: number }) {
+  const r = 5.4;
+
+  return (
+    <g stroke={PALETTE.ink} strokeWidth={2.2} fill="none" transform={`rotate(-6 ${x} ${baseline})`}>
+      <circle cx={x - r - 1} cy={baseline - r} r={r} />
+      <circle cx={x + r + 1} cy={baseline - r} r={r} />
+      <path d={`M ${x - 1.2} ${baseline - r} L ${x + 1.2} ${baseline - r}`} />
+      <path d={`M ${x - 2 * r - 2} ${baseline - r - 1} L ${x - 2 * r - 9} ${baseline - r + 2}`} />
     </g>
   );
 }
@@ -236,19 +281,16 @@ function ShelfUnit({
   side,
   shelf,
   spines,
-  stack,
-  prop,
+  room,
 }: {
   side: -1 | 1;
   shelf: (typeof SHELVES)["left"] | (typeof SHELVES)["right"];
   spines: Spine[];
-  stack: FlatBook[];
-  prop: "ivy" | "lamp";
+  room: "plants" | "corner";
 }) {
   const { offsets } = useMemo(() => layoutRow(spines), [spines]);
   const cx = shelf.x * S;
   const baseline = px(shelf.top);
-  const propX = cx + side * PROP_X * S;
 
   return (
     <g>
@@ -279,23 +321,39 @@ function ShelfUnit({
         />
       ))}
 
+      {room === "plants" ? (
+        <Frame x={cx - side * LEFT_FRAME_X * S} baseline={baseline} />
+      ) : null}
+
       {spines.map((spine, index) =>
         index === HERO_INDEX ? null : (
-          <SpineRect
-            key={index}
-            spine={spine}
-            x={cx + offsets[index] * S}
-            baseline={baseline}
-          />
+          <SpineRect key={index} spine={spine} x={cx + offsets[index] * S} baseline={baseline} />
         )
       )}
 
-      <Stack books={stack} x={cx - side * PROP_X * S} baseline={baseline} />
-
-      {prop === "ivy" ? (
-        <Ivy x={propX} baseline={baseline} />
+      {room === "plants" ? (
+        <Plant x={cx + side * PROP_X * S} baseline={baseline} />
       ) : (
-        <Lamp x={propX} baseline={baseline} />
+        <>
+          <g className="bs-lampglow">
+            <circle
+              cx={cx + side * PROP_X * S}
+              cy={baseline - 22}
+              r={32}
+              fill="url(#bs-warm)"
+            />
+          </g>
+          <rect x={cx + side * PROP_X * S - 9} y={baseline - 4} width={18} height={4} rx={2} fill={PALETTE.plumDeep} />
+          <rect x={cx + side * PROP_X * S - 1.4} y={baseline - 24} width={2.8} height={21} fill={PALETTE.plumDeep} />
+          <path
+            d={`M ${cx + side * PROP_X * S - 12} ${baseline - 23} L ${cx + side * PROP_X * S + 12} ${baseline - 23} L ${cx + side * PROP_X * S + 8} ${baseline - 38} L ${cx + side * PROP_X * S - 8} ${baseline - 38} Z`}
+            fill={PALETTE.plum}
+          />
+
+          <Stack books={RIGHT_STACK} x={cx + side * RIGHT_STACK_X * S} baseline={baseline} />
+          <Glasses x={cx + side * (RIGHT_STACK_X + 0.02) * S} baseline={baseline} />
+          <Mug x={cx + side * RIGHT_MUG_X * S} baseline={baseline} handle={side} />
+        </>
       )}
     </g>
   );
@@ -327,7 +385,7 @@ export default function BookSwapStatic() {
     [leftHome, leftAway, rightHome, rightAway]
   );
 
-  const halfWidth = 3.95 * S;
+  const halfWidth = 3.9 * S;
 
   return (
     <div
@@ -343,7 +401,7 @@ export default function BookSwapStatic() {
           97%       { opacity: 0.9; }
           100%      { opacity: 0.6; }
         }
-        @keyframes bs-lamp {
+        @keyframes bs-lampglow {
           0%, 100% { opacity: 0.75; }
           50%      { opacity: 0.95; }
         }
@@ -360,7 +418,7 @@ export default function BookSwapStatic() {
           transform-origin: center bottom;
         }
         .bs-wash { animation: bs-wash 24s ease-in-out infinite; }
-        .bs-lamp { animation: bs-lamp 6s ease-in-out infinite; opacity: 0.75; }
+        .bs-lampglow { animation: bs-lampglow 6s ease-in-out infinite; opacity: 0.75; }
         .bs-meeting {
           animation: bs-meeting 24s ease-in-out infinite;
           transform-box: fill-box;
@@ -368,7 +426,7 @@ export default function BookSwapStatic() {
           opacity: 0;
         }
         @media (prefers-reduced-motion: reduce) {
-          .bs-traveller, .bs-wash, .bs-lamp, .bs-meeting { animation: none !important; }
+          .bs-traveller, .bs-wash, .bs-lampglow, .bs-meeting { animation: none !important; }
         }
       `}</style>
 
@@ -397,23 +455,11 @@ export default function BookSwapStatic() {
           </radialGradient>
         </defs>
 
-        <ShelfUnit
-          side={-1}
-          shelf={SHELVES.left}
-          spines={LEFT_SPINES}
-          stack={LEFT_STACK}
-          prop="ivy"
-        />
-        <ShelfUnit
-          side={1}
-          shelf={SHELVES.right}
-          spines={RIGHT_SPINES}
-          stack={RIGHT_STACK}
-          prop="lamp"
-        />
+        <ShelfUnit side={-1} shelf={SHELVES.left} spines={LEFT_SPINES} room="plants" />
+        <ShelfUnit side={1} shelf={SHELVES.right} spines={RIGHT_SPINES} room="corner" />
 
         {/* The light that gathers between the books as they meet. */}
-        <circle className="bs-meeting" cx={0} cy={px(1.9)} r={52} fill="url(#bs-spark)" />
+        <circle className="bs-meeting" cx={0} cy={px(1.78)} r={52} fill="url(#bs-spark)" />
 
         <g className="bs-traveller" style={{ animationName: "bs-left" }}>
           <SpineRect spine={HERO_LEFT} x={leftHome} baseline={px(SHELVES.left.top)} />
