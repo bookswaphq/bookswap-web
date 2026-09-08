@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
+import { siteConfig } from "@/lib/site";
 
 const tips = [
   {
@@ -79,7 +80,7 @@ export default function Safety() {
       >
         Something felt off?{" "}
         <a
-          href="mailto:hello@bookswap.app"
+          href={`mailto:${siteConfig.supportEmail}`}
           className="underline underline-offset-2"
           style={{ color: "var(--primary)" }}
         >

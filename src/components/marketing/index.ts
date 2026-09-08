@@ -9,3 +9,4 @@ export { default as About } from "./sections/About/About";
 export { default as Safety } from "./sections/Safety/Safety";
 export { default as FAQ } from "./sections/FAQ/FAQ";
 export { default as Waitlist } from "./sections/Waitlist/Waitlist";
+export { default as Support } from "./sections/Support/Support";

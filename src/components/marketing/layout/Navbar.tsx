@@ -107,7 +107,7 @@ export default function Navbar() {
               return (
                 <a
                   key={link.id}
-                  href={`#${link.id}`}
+                  href={`/#${link.id}`}
                   className="whitespace-nowrap transition-colors duration-200"
                   style={{
                     color: active ? "var(--primary)" : "var(--ink-soft)",
@@ -118,16 +118,24 @@ export default function Navbar() {
                 </a>
               );
             })}
+
+            <Link
+              href="/support"
+              className="whitespace-nowrap transition-colors duration-200"
+              style={{ color: "var(--ink-soft)" }}
+            >
+              Support
+            </Link>
           </div>
 
           <div className="flex items-center gap-2">
-            <a
-              href="#waitlist"
+            <Link
+              href="/#waitlist"
               className="btn-primary rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap"
             >
               <span className="hidden sm:inline">Join the Waitlist</span>
               <span className="sm:hidden">Join</span>
-            </a>
+            </Link>
 
             <button
               type="button"
@@ -153,7 +161,7 @@ export default function Navbar() {
             {links.map((link) => (
               <a
                 key={link.id}
-                href={`#${link.id}`}
+                href={`/#${link.id}`}
                 onClick={() => setMenuOpen(false)}
                 className="py-1"
                 style={{
@@ -166,6 +174,15 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
+
+            <Link
+              href="/support"
+              onClick={() => setMenuOpen(false)}
+              className="py-1"
+              style={{ color: "var(--ink-soft)" }}
+            >
+              Support
+            </Link>
           </div>
         ) : null}
       </nav>

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
+import { siteConfig } from "@/lib/site";
 
 const effectiveDate = "August 18, 2026";
 
@@ -454,11 +455,11 @@ export default function Privacy() {
           >
             Email:{" "}
             <a
-              href="mailto:support@bookswapapp.com"
+              href={`mailto:${siteConfig.supportEmail}`}
               className="underline underline-offset-2"
               style={{ color: "var(--primary)" }}
             >
-              support@bookswapapp.com
+              {siteConfig.supportEmail}
             </a>
           </p>
         </motion.div>

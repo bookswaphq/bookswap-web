@@ -1,12 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { fadeIn, viewport } from "@/lib/motion";
+import { siteConfig } from "@/lib/site";
 
 export default function Footer() {
   return (
     <motion.footer
-      id="support"
       initial="hidden"
       whileInView="visible"
       viewport={viewport}
@@ -31,36 +32,40 @@ export default function Footer() {
         </p>
 
         <a
-          href="mailto:hello@bookswap.app"
+          href={`mailto:${siteConfig.supportEmail}`}
           className="font-mono text-xs tracking-wide transition-opacity hover:opacity-80"
           style={{
             color: "var(--primary-soft)",
           }}
         >
-          hello@bookswap.app
+          {siteConfig.supportEmail}
         </a>
       </div>
 
       <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mt-8 text-xs">
-        <a href="#faq" className="transition-opacity hover:opacity-80">
+        <Link href="/support" className="transition-opacity hover:opacity-80">
+          Support
+        </Link>
+
+        <Link href="/#faq" className="transition-opacity hover:opacity-80">
           FAQ
-        </a>
+        </Link>
 
-        <a href="#safety" className="transition-opacity hover:opacity-80">
+        <Link href="/#safety" className="transition-opacity hover:opacity-80">
           Trust &amp; Safety
-        </a>
+        </Link>
 
-        <a href="/privacy" className="transition-opacity hover:opacity-80">
+        <Link href="/privacy" className="transition-opacity hover:opacity-80">
           Privacy Policy
-        </a>
+        </Link>
 
         {/* <a href="/terms" className="transition-opacity hover:opacity-80">
           Terms of Service
         </a> */}
 
-        <a href="/engineering" className="transition-opacity hover:opacity-80">
+        <Link href="/engineering" className="transition-opacity hover:opacity-80">
           Engineering
-        </a>
+        </Link>
       </div>
 
       <div
