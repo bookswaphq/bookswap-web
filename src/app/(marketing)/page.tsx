@@ -7,7 +7,7 @@ import {
   About,
   Safety,
   FAQ,
-  Waitlist,
+  Download,
   Footer,
 } from "@/components/marketing";
 import { Analytics } from "@vercel/analytics/react";
@@ -29,7 +29,7 @@ export default function MarketingPage() {
       <About />
       <Safety />
       <FAQ />
-      <Waitlist />
+      <Download />
       <Footer />
     </main>
   );

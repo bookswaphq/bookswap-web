@@ -1,3 +1,5 @@
+export { default as AppStoreButton } from "./AppStoreButton";
+export { default as GooglePlayButton } from "./GooglePlayButton";
 export { default as Navbar } from "./layout/Navbar";
 export { default as Footer } from "./layout/Footer";
 
@@ -8,5 +10,5 @@ export { default as HowItWorks } from "./sections/HowItWorks/HowItWorks";
 export { default as About } from "./sections/About/About";
 export { default as Safety } from "./sections/Safety/Safety";
 export { default as FAQ } from "./sections/FAQ/FAQ";
-export { default as Waitlist } from "./sections/Waitlist/Waitlist";
+export { default as Download } from "./sections/Download/Download";
 export { default as Support } from "./sections/Support/Support";

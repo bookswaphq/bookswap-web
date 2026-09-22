@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer } from "@/lib/motion";
 import HeroVisual from "@/components/three/HeroVisual";
+import AppStoreButton from "@/components/marketing/AppStoreButton";
 
 export default function Hero() {
   return (
@@ -47,22 +48,49 @@ export default function Hero() {
 
       <motion.div
         variants={fadeUp}
-        className="mt-8 flex flex-wrap gap-3 sm:gap-4 justify-center"
+        className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
       >
-        <a
-          href="#waitlist"
-          className="btn-primary rounded-xl px-6 py-3 font-medium"
-        >
-          Join Waitlist
-        </a>
+        <AppStoreButton />
 
         <a
           href="#how-it-works"
-          className="btn-outline rounded-xl px-6 py-3 font-medium"
+          className="
+      group inline-flex h-14 items-center justify-center gap-3
+      whitespace-nowrap rounded-2xl border border-[#E5DCEF]
+      bg-white px-6 text-sm font-medium text-[#4B3B60]
+      transition-[background-color,border-color,color] duration-200
+      hover:border-[#CDB5F5] hover:bg-[#F7F3FF] hover:text-[#6E2EE6]
+      focus-visible:outline-none focus-visible:ring-2
+      focus-visible:ring-[#7F3DFF] focus-visible:ring-offset-4
+      motion-reduce:transition-none
+    "
         >
           How Swapping Works
+
+          <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+            className="transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:transform-none"
+          >
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
         </a>
       </motion.div>
+
+      <motion.p
+        variants={fadeUp}
+        className="mt-3 text-[13px]"
+        style={{ color: "var(--ink-muted)" }}
+      >
+        Free on iPhone · Android coming soon
+      </motion.p>
 
       {/* Two shelves trading a pair of books. WebGL on desktop, CSS elsewhere. */}
       <motion.div variants={fadeUp} className="w-full max-w-5xl mt-5 sm:mt-6">

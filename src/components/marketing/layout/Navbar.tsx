@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
+import AppStoreButton from "@/components/marketing/AppStoreButton";
 
 const links = [
   { id: "showcase", label: "Tour" },
@@ -129,13 +130,7 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Link
-              href="/#waitlist"
-              className="btn-primary rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap"
-            >
-              <span className="hidden sm:inline">Join the Waitlist</span>
-              <span className="sm:hidden">Join</span>
-            </Link>
+            <AppStoreButton variant="compact" />
 
             <button
               type="button"

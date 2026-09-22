@@ -11,7 +11,7 @@ const faqs = [
   },
   {
     q: "How do I get access?",
-    a: "BookSwap is currently preparing for launch on the App Store. Join the waitlist and we'll let you know when the app is available.",
+    a: "BookSwap is on the App Store — download it for free on your iPhone, sign in, and you can start swapping right away.",
   },
   {
     q: "Which platforms does it run on?",
