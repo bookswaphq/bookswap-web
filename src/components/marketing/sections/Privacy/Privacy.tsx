@@ -269,11 +269,11 @@ const sections: Section[] = [
       { type: "subtitle", text: "Deleting Your Account" },
       {
         type: "text",
-        text: "You can delete your BookSwap account at any time directly in the app, without contacting us. Open the Profile tab, then select Delete Account and confirm.",
+        text: "You can delete your BookSwap account at any time directly in the app, without contacting us. Open the Profile tab, then select Delete Account and confirm. If you no longer have the app, you can request deletion at https://www.bookswapapp.com/delete-account.",
       },
       {
         type: "text",
-        text: "Deleting your account removes your profile photo, clears your library and wishlist, cancels any pending swap offers, deletes your conversations, and removes or anonymizes your personal information as described in Section 7. This action cannot be undone.",
+        text: "Deleting your account removes your profile photo, phone number and other profile details, clears your library and wishlist, cancels any pending swap offers, and removes your personal information from everything other users can see, as described in Section 7. Messages you sent remain in the other participant's conversation, shown as coming from a deleted user with no name or photo. This action cannot be undone.",
       },
       {
         type: "text",

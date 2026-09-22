@@ -59,6 +59,10 @@ export default function Footer() {
           Privacy Policy
         </Link>
 
+        <Link href="/delete-account" className="transition-opacity hover:opacity-80">
+          Delete Account
+        </Link>
+
         {/* <a href="/terms" className="transition-opacity hover:opacity-80">
           Terms of Service
         </a> */}
