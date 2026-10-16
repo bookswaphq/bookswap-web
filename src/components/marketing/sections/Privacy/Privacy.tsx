@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
 import { siteConfig } from "@/lib/site";
 
-const effectiveDate = "August 18, 2026";
+const effectiveDate = "October 13, 2026";
 
 type Block =
   | { type: "text"; text: string }
@@ -78,6 +78,23 @@ const sections: Section[] = [
         type: "text",
         text: "BookSwap provides in-app messaging between users. Messages, message timestamps, and related metadata are stored solely to provide messaging functionality.",
       },
+      { type: "subtitle", text: "Location Information" },
+      {
+        type: "text",
+        text: "If you choose to set a swap location, we collect:",
+      },
+      {
+        type: "list",
+        items: [
+          "The district and city you choose from a list, or that is detected from your device's approximate location",
+          "Approximate coordinates, rounded to roughly 1 km (for a district you choose from the list, the centre of that district)",
+          "Whether the location was chosen from the list or detected from your device",
+        ],
+      },
+      {
+        type: "text",
+        text: "Your exact GPS position is never sent to or stored on our servers. Setting a swap location is optional, and you can change or remove it at any time. District names and coordinates are based on GeoNames data (geonames.org), licensed under CC BY 4.0.",
+      },
       { type: "subtitle", text: "Device Information" },
       {
         type: "text",
@@ -109,6 +126,11 @@ const sections: Section[] = [
       {
         type: "text",
         text: "BookSwap requests access to your photo library so you can choose an existing photo as your profile picture. We only access the photos you select, and we do not scan or upload your photo library.",
+      },
+      { type: "subtitle", text: "Location" },
+      {
+        type: "text",
+        text: "BookSwap asks for your approximate location only, and only when you choose \"Use current location\" to set your swap location. The location is read once, while you use the app; BookSwap does not track your location or access it in the background. To find your district, your device's built-in address service (provided by Apple on iOS and Google on Android) is given the rounded location, not your exact position. You can use BookSwap without granting this permission by choosing your city and district from a list instead, or by not setting a location at all.",
       },
       { type: "subtitle", text: "Notifications" },
       {
@@ -142,6 +164,7 @@ const sections: Section[] = [
           "Provide the BookSwap service",
           "Display your public profile",
           "Enable users to exchange books",
+          "Show books and swap partners near you, and the approximate distance to them",
           "Store and synchronize your library",
           "Process swap offers",
           "Deliver real-time chat",
@@ -182,6 +205,7 @@ const sections: Section[] = [
           "Google Firebase Crashlytics - crash and diagnostic reporting, which may be linked to your account identifier",
           "Google reCAPTCHA Enterprise - protecting sign-in from automated abuse",
           "Expo Push Notification Service - delivering push notifications",
+          "Apple and Google location services built into your device - finding the district for your approximate location, only when you choose \"Use current location\"",
           "DigitalOcean - cloud hosting and storage of images",
         ],
       },
@@ -206,6 +230,10 @@ const sections: Section[] = [
       },
       {
         type: "text",
+        text: "If you set a swap location, other BookSwap users can see its district and city, and an approximate distance between you in whole kilometres - for example on your profile, next to books you own, and on swap offers. They never see your coordinates.",
+      },
+      {
+        type: "text",
         text: "We do not sell or rent personal information to advertisers or data brokers.",
       },
     ],
@@ -220,6 +248,10 @@ const sections: Section[] = [
       {
         type: "text",
         text: "When your account is deleted, we will delete or anonymize your personal information within a reasonable period unless we are legally required to retain certain information.",
+      },
+      {
+        type: "text",
+        text: "Your swap location is deleted as soon as you remove it in the app or delete your account.",
       },
     ],
   },
@@ -266,6 +298,11 @@ const sections: Section[] = [
           "Withdrawal of consent where applicable",
         ],
       },
+      { type: "subtitle", text: "Changing or Removing Your Location" },
+      {
+        type: "text",
+        text: "You can change your swap location, or remove it with \"Remove location\", at any time from the location button on the Home or Profile screen. Removing it deletes it from our servers.",
+      },
       { type: "subtitle", text: "Deleting Your Account" },
       {
         type: "text",
@@ -273,7 +310,7 @@ const sections: Section[] = [
       },
       {
         type: "text",
-        text: "Deleting your account removes your profile photo, phone number and other profile details, clears your library and wishlist, cancels any pending swap offers, and removes your personal information from everything other users can see, as described in Section 7. Messages you sent remain in the other participant's conversation, shown as coming from a deleted user with no name or photo. This action cannot be undone.",
+        text: "Deleting your account removes your profile photo, phone number, swap location and other profile details, clears your library and wishlist, cancels any pending swap offers, and removes your personal information from everything other users can see, as described in Section 7. Messages you sent remain in the other participant's conversation, shown as coming from a deleted user with no name or photo. This action cannot be undone.",
       },
       {
         type: "text",
