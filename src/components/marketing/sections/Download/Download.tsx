@@ -35,8 +35,8 @@ export default function Download() {
         className="mt-3 text-sm max-w-sm"
         style={{ color: "var(--ink-soft)" }}
       >
-        BookSwap is live on the App Store. Download it, add the books you&apos;ve
-        finished, and start swapping with readers near you.
+        BookSwap is now available on the App Store and Google Play. Download it,
+        add the books you&apos;ve finished, and start swapping with readers near you.
       </motion.p>
 
       <motion.div
