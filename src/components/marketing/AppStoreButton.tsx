@@ -1,4 +1,5 @@
 import { appStoreLink, type AppStoreCampaign } from "@/lib/site";
+import { STORE_BADGE_CLASS } from "./storeBadge";
 
 /** Apple's logo glyph, drawn inline so the button stays crisp at any size. */
 function AppleMark({ size = 18 }: { size?: number }) {
@@ -20,67 +21,28 @@ function AppleMark({ size = 18 }: { size?: number }) {
 type Props = {
   /** Where the button sits; tags the link so App Store Connect reports it separately. */
   campaign: AppStoreCampaign;
-  /** `compact` is the navbar pill; `full` is the two-line store badge. */
-  variant?: "full" | "compact";
   className?: string;
 };
 
 /**
- * Single entry point for every "get the app" link on the site, so the store
- * URL lives in one place (siteConfig.appStoreUrl, tagged by appStoreLink()).
+ * The App Store badge: black, white Apple mark, "Download on the / App Store" - the
+ * store's own badge look, so it reads instantly. Single entry point for every App Store
+ * link (siteConfig.appStoreUrl, tagged by appStoreLink()).
  */
-export default function AppStoreButton({
-  campaign,
-  variant = "full",
-  className = "",
-}: Props) {
-  const href = appStoreLink(campaign);
-
-  const base =
-    "inline-flex shrink-0 items-center justify-center whitespace-nowrap " +
-    "bg-[#7F3DFF] text-white font-medium " +
-    "transition-[background-color,box-shadow,transform] duration-200 " +
-    "hover:bg-[#6E2EE6] active:scale-[0.98] " +
-    "focus-visible:outline-none focus-visible:ring-2 " +
-    "focus-visible:ring-[#7F3DFF] focus-visible:ring-offset-4 " +
-    "motion-reduce:transition-none";
-
-  if (variant === "compact") {
-    return (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Download BookSwap on the App Store"
-        className={`${base} h-10 gap-2 rounded-full px-4 text-sm ${className}`}
-      >
-        <AppleMark size={18} />
-        <span className="hidden sm:inline">App Store</span>
-        <span className="sm:hidden">Get</span>
-      </a>
-    );
-  }
-
+export default function AppStoreButton({ campaign, className = "" }: Props) {
   return (
     <a
-      href={href}
+      href={appStoreLink(campaign)}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Download BookSwap on the App Store"
-      className={`${base} h-14 gap-3 rounded-2xl px-6
-        shadow-[0_4px_14px_rgba(127,61,255,0.18)]
-        hover:shadow-[0_6px_20px_rgba(127,61,255,0.26)]
-        ${className}`}
+      className={`${STORE_BADGE_CLASS} ${className}`}
     >
-      <AppleMark size={28} />
+      <AppleMark size={30} />
 
-      <span className="flex flex-col items-start gap-0.5">
-        <span className="text-[11px] font-normal leading-tight text-white/85">
-          Download on the
-        </span>
-        <span className="text-[19px] font-semibold leading-tight tracking-tight">
-          App Store
-        </span>
+      <span className="flex flex-col items-start">
+        <span className="text-[11px] font-normal leading-tight">Download on the</span>
+        <span className="text-[22px] font-semibold leading-none tracking-tight">App Store</span>
       </span>
     </a>
   );

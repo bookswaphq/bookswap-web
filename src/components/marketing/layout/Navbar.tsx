@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
-import AppStoreButton from "@/components/marketing/AppStoreButton";
 
 const links = [
-  { id: "showcase", label: "Tour" },
+  { id: "showcase", label: "App tour" },
   { id: "how-it-works", label: "How it works" },
   { id: "features", label: "Features" },
   { id: "about", label: "About" },
@@ -130,7 +129,21 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
-            <AppStoreButton campaign="website-navbar" variant="compact" />
+            {/* Both stores live in the Download section; one button here would send
+                Android visitors to the App Store. */}
+            <Link
+              // "/#download", not "#download": the navbar is on every page (privacy,
+              // support...), and the section only exists on the home page.
+              href="/#download"
+              className="inline-flex h-10 shrink-0 items-center justify-center whitespace-nowrap
+                rounded-full bg-[#7F3DFF] px-4 text-sm font-medium text-white
+                transition-[background-color,transform] duration-200
+                hover:bg-[#6E2EE6] active:scale-[0.98]
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7F3DFF]
+                focus-visible:ring-offset-4 motion-reduce:transition-none"
+            >
+              Get the app
+            </Link>
 
             <button
               type="button"

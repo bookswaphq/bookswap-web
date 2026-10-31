@@ -1,18 +1,21 @@
 import { playStoreLink, type PlayStoreCampaign } from "@/lib/site";
+import { STORE_BADGE_CLASS } from "./storeBadge";
 
-/** Generic play glyph — placeholder until the official Play badge art is in `public/`. */
-function PlayMark({ size = 22 }: { size?: number }) {
+/** The four-colour Play triangle, as on Google Play's own badge. */
+function PlayMark({ size = 28 }: { size?: number }) {
   return (
     <svg
-      viewBox="0 0 24 24"
+      viewBox="0 0 24 26"
       width={size}
-      height={size}
-      fill="currentColor"
+      height={(size * 26) / 24}
       aria-hidden="true"
       focusable="false"
       className="shrink-0"
     >
-      <path d="M8 5.14v13.72a1 1 0 0 0 1.52.86l11.14-6.86a1 1 0 0 0 0-1.72L9.52 4.28A1 1 0 0 0 8 5.14Z" />
+      <path d="M1.2.6 13.4 12.9 1.2 25.2C.9 24.9.7 24.4.7 23.8V2C.7 1.4.9.9 1.2.6Z" fill="#00D7FE" />
+      <path d="M17.5 17 13.4 12.9 17.5 8.8l4.9 2.8c1.4.8 1.4 2.1 0 2.9L17.5 17Z" fill="#FFCE00" />
+      <path d="M17.5 17 13.4 12.9 1.2 25.2c.5.5 1.2.5 2.1.1L17.5 17Z" fill="#FF3A44" />
+      <path d="M17.5 8.8 3.3.6C2.4.1 1.7.1 1.2.6L13.4 12.9l4.1-4.1Z" fill="#00F076" />
     </svg>
   );
 }
@@ -24,8 +27,8 @@ type Props = {
 };
 
 /**
- * The Google Play store badge. Same shape and colour as the App Store badge, so the
- * pair reads as one row with neither store looking secondary.
+ * The Google Play badge: black, the four-colour Play mark, "GET IT ON / Google Play".
+ * Same shape and size as the App Store badge (storeBadge.ts).
  */
 export default function GooglePlayButton({ campaign, className = "" }: Props) {
   return (
@@ -34,25 +37,13 @@ export default function GooglePlayButton({ campaign, className = "" }: Props) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Get BookSwap on Google Play"
-      className={`inline-flex h-14 shrink-0 items-center justify-center gap-3
-        whitespace-nowrap rounded-2xl bg-[#7F3DFF] px-6 font-medium text-white
-        shadow-[0_4px_14px_rgba(127,61,255,0.18)]
-        transition-[background-color,box-shadow,transform] duration-200
-        hover:bg-[#6E2EE6] hover:shadow-[0_6px_20px_rgba(127,61,255,0.26)]
-        active:scale-[0.98]
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7F3DFF]
-        focus-visible:ring-offset-4 motion-reduce:transition-none
-        ${className}`}
+      className={`${STORE_BADGE_CLASS} ${className}`}
     >
       <PlayMark size={26} />
 
-      <span className="flex flex-col items-start gap-0.5">
-        <span className="text-[11px] font-normal leading-tight text-white/85">
-          Get it on
-        </span>
-        <span className="text-[19px] font-semibold leading-tight tracking-tight">
-          Google Play
-        </span>
+      <span className="flex flex-col items-start">
+        <span className="text-[10px] font-medium uppercase leading-tight tracking-wide">Get it on</span>
+        <span className="text-[22px] font-semibold leading-none tracking-tight">Google Play</span>
       </span>
     </a>
   );

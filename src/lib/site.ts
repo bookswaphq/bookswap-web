@@ -23,7 +23,7 @@ export const siteConfig = {
  * App Store Connect → Analytics → Sources → Campaigns, so the placements can be
  * compared: impressions, downloads and conversion per button.
  */
-export type AppStoreCampaign = "website-hero" | "website-navbar" | "website-download";
+export type AppStoreCampaign = "website-hero" | "website-download";
 
 /** The App Store URL tagged with `campaign` (Apple campaign link: pt, ct, mt=8). */
 export function appStoreLink(campaign: AppStoreCampaign): string {
@@ -37,7 +37,7 @@ export function appStoreLink(campaign: AppStoreCampaign): string {
 }
 
 /** Where on the site a Google Play link sits; reported in Play Console by UTM campaign. */
-export type PlayStoreCampaign = "website-download";
+export type PlayStoreCampaign = "website-hero" | "website-download";
 
 /**
  * The Google Play URL with a referrer: Play Console attributes installs to its UTM
