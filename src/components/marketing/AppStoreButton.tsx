@@ -1,4 +1,4 @@
-import { siteConfig } from "@/lib/site";
+import { appStoreLink, type AppStoreCampaign } from "@/lib/site";
 
 /** Apple's logo glyph, drawn inline so the button stays crisp at any size. */
 function AppleMark({ size = 18 }: { size?: number }) {
@@ -18,6 +18,8 @@ function AppleMark({ size = 18 }: { size?: number }) {
 }
 
 type Props = {
+  /** Where the button sits; tags the link so App Store Connect reports it separately. */
+  campaign: AppStoreCampaign;
   /** `compact` is the navbar pill; `full` is the two-line store badge. */
   variant?: "full" | "compact";
   className?: string;
@@ -25,12 +27,15 @@ type Props = {
 
 /**
  * Single entry point for every "get the app" link on the site, so the store
- * URL lives in one place (siteConfig.appStoreUrl).
+ * URL lives in one place (siteConfig.appStoreUrl, tagged by appStoreLink()).
  */
 export default function AppStoreButton({
+  campaign,
   variant = "full",
   className = "",
 }: Props) {
+  const href = appStoreLink(campaign);
+
   const base =
     "inline-flex shrink-0 items-center justify-center whitespace-nowrap " +
     "bg-[#7F3DFF] text-white font-medium " +
@@ -43,7 +48,7 @@ export default function AppStoreButton({
   if (variant === "compact") {
     return (
       <a
-        href={siteConfig.appStoreUrl}
+        href={href}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Download BookSwap on the App Store"
@@ -58,7 +63,7 @@ export default function AppStoreButton({
 
   return (
     <a
-      href={siteConfig.appStoreUrl}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Download BookSwap on the App Store"

@@ -50,7 +50,7 @@ export default function Hero() {
         variants={fadeUp}
         className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
       >
-        <AppStoreButton />
+        <AppStoreButton campaign="website-hero" />
 
         <a
           href="#how-it-works"
@@ -89,7 +89,7 @@ export default function Hero() {
         className="mt-3 text-[13px]"
         style={{ color: "var(--ink-muted)" }}
       >
-        Free on iPhone · Android coming soon
+        Free on iPhone and Android
       </motion.p>
 
       {/* Two shelves trading a pair of books. WebGL on desktop, CSS elsewhere. */}

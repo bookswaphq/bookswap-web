@@ -1,3 +1,5 @@
+import { playStoreLink, type PlayStoreCampaign } from "@/lib/site";
+
 /** Generic play glyph — placeholder until the official Play badge art is in `public/`. */
 function PlayMark({ size = 22 }: { size?: number }) {
   return (
@@ -16,36 +18,42 @@ function PlayMark({ size = 22 }: { size?: number }) {
 }
 
 type Props = {
+  /** Where the button sits; tags the link so Play Console reports it separately. */
+  campaign: PlayStoreCampaign;
   className?: string;
 };
 
 /**
- * Android isn't shipped yet — this is a deliberately inert badge that sits
- * next to the App Store button so the pair reads as one row.
+ * The Google Play store badge. Same shape and colour as the App Store badge, so the
+ * pair reads as one row with neither store looking secondary.
  */
-export default function GooglePlayButton({ className = "" }: Props) {
+export default function GooglePlayButton({ campaign, className = "" }: Props) {
   return (
-    <button
-      type="button"
-      disabled
-      aria-label="Google Play — coming soon"
-      className={`
-        inline-flex h-14 cursor-not-allowed items-center justify-center
-        gap-3 whitespace-nowrap rounded-2xl border border-gray-200
-        bg-gray-100 px-6 text-gray-500
-        ${className}
-      `}
+    <a
+      href={playStoreLink(campaign)}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Get BookSwap on Google Play"
+      className={`inline-flex h-14 shrink-0 items-center justify-center gap-3
+        whitespace-nowrap rounded-2xl bg-[#7F3DFF] px-6 font-medium text-white
+        shadow-[0_4px_14px_rgba(127,61,255,0.18)]
+        transition-[background-color,box-shadow,transform] duration-200
+        hover:bg-[#6E2EE6] hover:shadow-[0_6px_20px_rgba(127,61,255,0.26)]
+        active:scale-[0.98]
+        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7F3DFF]
+        focus-visible:ring-offset-4 motion-reduce:transition-none
+        ${className}`}
     >
-      <PlayMark />
+      <PlayMark size={26} />
 
       <span className="flex flex-col items-start gap-0.5">
-        <span className="text-[11px] font-normal leading-tight">
-          Coming soon on
+        <span className="text-[11px] font-normal leading-tight text-white/85">
+          Get it on
         </span>
         <span className="text-[19px] font-semibold leading-tight tracking-tight">
           Google Play
         </span>
       </span>
-    </button>
+    </a>
   );
 }

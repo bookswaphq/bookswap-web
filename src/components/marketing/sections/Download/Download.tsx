@@ -43,8 +43,8 @@ export default function Download() {
         variants={fadeUp}
         className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4"
       >
-        <AppStoreButton />
-        <GooglePlayButton />
+        <AppStoreButton campaign="website-download" />
+        <GooglePlayButton campaign="website-download" />
       </motion.div>
 
       <motion.p
@@ -52,7 +52,7 @@ export default function Download() {
         className="font-mono text-[11px] tracking-[0.18em] uppercase mt-5"
         style={{ color: "var(--ink-muted)" }}
       >
-        Free · iPhone · Android soon
+        Free · iPhone · Android
       </motion.p>
     </motion.section>
   );

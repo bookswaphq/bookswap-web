@@ -130,7 +130,7 @@ export default function Navbar() {
           </div>
 
           <div className="flex items-center gap-2">
-            <AppStoreButton variant="compact" />
+            <AppStoreButton campaign="website-navbar" variant="compact" />
 
             <button
               type="button"
