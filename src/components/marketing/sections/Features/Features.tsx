@@ -2,23 +2,10 @@
 
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
-
-const features = [
-  {
-    title: "Scan to add",
-    copy: "Point your camera at any barcode and add a book to your shelf in seconds no typing required.",
-  },
-  {
-    title: "Find a swap",
-    copy: "See how many readers own a book before you send a swap request.",
-  },
-  {
-    title: "Chat inside the app",
-    copy: "Agree on the details and arrange your handoff without ever leaving BookSwap.",
-  },
-];
+import { useLocale } from "@/i18n/LocaleContext";
 
 export default function Features() {
+  const { t } = useLocale();
   return (
     <motion.section
       id="features"
@@ -33,21 +20,20 @@ export default function Features() {
         className="mx-auto flex max-w-2xl flex-col items-center text-center"
       >
         <span className="font-mono text-xs uppercase tracking-[0.2em] text-[var(--primary)]">
-          Inside BookSwap
+          {t.features.eyebrow}
         </span>
 
         <h2 className="mt-4 font-display text-3xl font-medium leading-tight text-[var(--ink)] sm:text-4xl">
-          A shorter journey between two bookshelves.
+          {t.features.title}
         </h2>
 
         <p className="mt-5 max-w-xl text-sm leading-7 text-[var(--ink-soft)]">
-          Add what you’ve finished, find what you want to read next, and arrange
-          the swap in one place.
+          {t.features.subtitle}
         </p>
       </motion.header>
 
       <div className="mx-auto mt-14 w-full max-w-4xl border-t border-[var(--border)]">
-        {features.map(({ title, copy }) => (
+        {t.features.items.map(({ title, copy }) => (
           <motion.article
             key={title}
             variants={fadeUp}

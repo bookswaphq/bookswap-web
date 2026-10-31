@@ -4,8 +4,10 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { fadeIn, viewport } from "@/lib/motion";
 import { siteConfig } from "@/lib/site";
+import { useLocale } from "@/i18n/LocaleContext";
 
 export default function Footer() {
+  const { t, homePath } = useLocale();
   return (
     <motion.footer
       initial="hidden"
@@ -27,8 +29,7 @@ export default function Footer() {
         </span>
 
         <p className="text-sm max-w-xs">
-          Give finished books a new journey. Discover, exchange, and keep
-          stories moving.
+          {t.footer.tagline}
         </p>
 
         <a
@@ -44,23 +45,23 @@ export default function Footer() {
 
       <div className="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 mt-8 text-xs">
         <Link href="/support" className="transition-opacity hover:opacity-80">
-          Support
+          {t.footer.support}
         </Link>
 
-        <Link href="/#faq" className="transition-opacity hover:opacity-80">
-          FAQ
+        <Link href={`${homePath}#faq`} className="transition-opacity hover:opacity-80">
+          {t.footer.faq}
         </Link>
 
-        <Link href="/#safety" className="transition-opacity hover:opacity-80">
-          Trust &amp; Safety
+        <Link href={`${homePath}#safety`} className="transition-opacity hover:opacity-80">
+          {t.footer.safety}
         </Link>
 
         <Link href="/privacy" className="transition-opacity hover:opacity-80">
-          Privacy Policy
+          {t.footer.privacy}
         </Link>
 
         <Link href="/delete-account" className="transition-opacity hover:opacity-80">
-          Delete Account
+          {t.footer.deleteAccount}
         </Link>
 
         {/* <a href="/terms" className="transition-opacity hover:opacity-80">
@@ -68,7 +69,7 @@ export default function Footer() {
         </a> */}
 
         <Link href="/engineering" className="transition-opacity hover:opacity-80">
-          Engineering
+          {t.footer.engineering}
         </Link>
       </div>
 
@@ -86,7 +87,7 @@ export default function Footer() {
 
         <span className="hidden sm:inline">·</span>
 
-        <span>Istanbul</span>
+        <span>{t.footer.city}</span>
       </div>
     </motion.footer>
   );

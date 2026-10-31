@@ -3,54 +3,27 @@
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
 import PhoneFrame from "@/components/ui/PhoneFrame";
+import { useLocale } from "@/i18n/LocaleContext";
+
+type FeatureId = "scan" | "search" | "library" | "chat";
 
 interface Feature {
-  id: string;
-  title: string;
-  description: string;
-  alt: string;
+  id: FeatureId;
   src?: string;
   primarySrc?: string;
   secondarySrc?: string;
 }
 
+// Images only; titles, descriptions and alt texts come from the dictionary.
 const features: Feature[] = [
-  {
-    id: "scan",
-    title: "Instant Barcode Scan",
-    description:
-      "Scan any book's barcode to add it to your shelf in seconds no manual entry needed.",
-    src: "/screenshots/barcode-scan.png",
-    alt: "Barcode scanning screen showing instant book detail recognition",
-  },
-  {
-    id: "search",
-    title: "Find Books to Swap",
-    description:
-      "Explore books, see how many readers own the ones you want, and send a swap request.",
-    src: "/screenshots/search-owners.png",
-    alt: "Search results screen displaying available book owners nearby",
-  },
-  {
-    id: "library",
-    title: "Wishlist & Library",
-    description:
-      "Organize your library and keep track of the books you'd like to receive in a swap.",
-    src: "/screenshots/library.png",
-    alt: "Personal library and wishlist management screen",
-  },
-  {
-    id: "chat",
-    title: "Chat & Swap Offers",
-    description:
-      "Send quick exchange requests and coordinate easy handovers via built-in messaging.",
-    primarySrc: "/screenshots/offer-details.png",
-    secondarySrc: "/screenshots/chat.png",
-    alt: "Dual screen layout showing real-time chat and swap offer modal",
-  },
+  { id: "scan", src: "/screenshots/barcode-scan.png" },
+  { id: "search", src: "/screenshots/search-owners.png" },
+  { id: "library", src: "/screenshots/library.png" },
+  { id: "chat", primarySrc: "/screenshots/offer-details.png", secondarySrc: "/screenshots/chat.png" },
 ];
 
 export default function Showcase() {
+  const { t } = useLocale();
   return (
     <motion.section
       id="showcase"
@@ -66,26 +39,28 @@ export default function Showcase() {
         className="font-mono text-xs tracking-[0.2em] uppercase"
         style={{ color: "var(--primary)" }}
       >
-        Product Tour
+        {t.showcase.eyebrow}
       </motion.span>
 
       <motion.h2
         variants={fadeUp}
         className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]"
       >
-        See BookSwap in action
+        {t.showcase.title}
       </motion.h2>
 
       <motion.p
         variants={fadeUp}
         className="mt-4 max-w-md text-sm sm:text-base text-[var(--ink-soft)]"
       >
-        From discovering a book to chatting with your swap partner.
+        {t.showcase.subtitle}
       </motion.p>
 
       {/* Grid - Cut Effect Layer Kartlar */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-12 sm:mt-14 w-full">
-        {features.map((feature, idx) => (
+        {features.map((feature, idx) => {
+          const copy = t.showcase.features[feature.id];
+          return (
           <motion.div
             key={feature.id}
             variants={fadeUp}
@@ -111,11 +86,11 @@ export default function Showcase() {
             {/* Metin Kutusu (Sabit Üst Bölüm) */}
             <div className="relative z-20 max-w-xs shrink-0">
               <h3 className="font-display text-lg font-medium text-[var(--ink)]">
-                {feature.title}
+                {copy.title}
               </h3>
 
               <p className="mt-2 text-xs sm:text-sm leading-relaxed text-[var(--ink-soft)]">
-                {feature.description}
+                {copy.description}
               </p>
             </div>
 
@@ -140,7 +115,7 @@ export default function Showcase() {
                   >
                     <PhoneFrame
                       src={feature.primarySrc}
-                      alt={feature.alt}
+                      alt={copy.alt}
                       priority={idx === 0}
                     />
                   </div>
@@ -160,7 +135,7 @@ export default function Showcase() {
                   >
                     <PhoneFrame
                       src={feature.secondarySrc}
-                      alt={`${feature.alt} secondary`}
+                      alt={copy.alt}
                     />
                   </div>
                 </div>
@@ -178,14 +153,15 @@ export default function Showcase() {
                 >
                   <PhoneFrame
                     src={feature.src!}
-                    alt={feature.alt}
+                    alt={copy.alt}
                     priority={idx === 0}
                   />
                 </div>
               )}
             </div>
           </motion.div>
-        ))}
+          );
+        })}
       </div>
     </motion.section>
   );

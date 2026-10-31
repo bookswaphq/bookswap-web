@@ -5,8 +5,10 @@ import { fadeUp, staggerContainer } from "@/lib/motion";
 import HeroVisual from "@/components/three/HeroVisual";
 import AppStoreButton from "@/components/marketing/AppStoreButton";
 import GooglePlayButton from "@/components/marketing/GooglePlayButton";
+import { useLocale } from "@/i18n/LocaleContext";
 
 export default function Hero() {
+  const { t } = useLocale();
   return (
     <motion.section
       id="hero"
@@ -19,11 +21,11 @@ export default function Hero() {
         variants={fadeUp}
         className="font-display max-w-4xl text-4xl sm:text-5xl lg:text-[3.5rem] font-medium leading-[1.08] tracking-tight text-[var(--ink)] text-balance"
       >
-        Your finished book is{" "}
+        {t.hero.titleBefore}{" "}
         <span className="italic" style={{ color: "var(--primary)" }}>
-          someone else&apos;s
+          {t.hero.titleEmphasis}
         </span>{" "}
-        next story.
+        {t.hero.titleAfter}
       </motion.h1>
 
       <motion.p
@@ -34,8 +36,8 @@ export default function Hero() {
         className="mt-5 text-lg max-w-xl text-balance"
         style={{ color: "var(--ink-soft)" }}
       >
-        Discover books nearby, connect with local readers,
-        <br className="hidden sm:block" /> and offer a swap.
+        {t.hero.subtitleLine1}
+        <br className="hidden sm:block" /> {t.hero.subtitleLine2}
       </motion.p>
 
       <motion.div
@@ -52,7 +54,7 @@ export default function Hero() {
         className="mt-3 text-[13px]"
         style={{ color: "var(--ink-muted)" }}
       >
-        Free to download
+        {t.hero.free}
       </motion.p>
 
       <motion.a
@@ -64,7 +66,7 @@ export default function Hero() {
           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7F3DFF]
           focus-visible:ring-offset-4 rounded-sm"
       >
-        See how swapping works
+        {t.hero.howItWorksLink}
         <svg
           width="16"
           height="16"
@@ -91,7 +93,7 @@ export default function Hero() {
         className="font-mono text-[11px] tracking-[0.18em] uppercase mt-3"
         style={{ color: "var(--ink-muted)" }}
       >
-        28M+ titles · offer · match · swap
+        {t.hero.tagline}
       </motion.p>
     </motion.section>
   );

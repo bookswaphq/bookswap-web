@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
+import { useLocale } from "@/i18n/LocaleContext";
 
 export default function About() {
+  const { t } = useLocale();
   return (
     <motion.section
       id="about"
@@ -18,15 +20,14 @@ export default function About() {
         className="font-mono text-xs tracking-[0.2em] uppercase"
         style={{ color: "var(--primary)" }}
       >
-        About BookSwap
+        {t.about.eyebrow}
       </motion.span>
 
       <motion.p
         variants={fadeUp}
         className="font-display mt-6 text-2xl sm:text-3xl italic leading-snug text-[var(--ink)]"
       >
-        &ldquo;Books are meant to be read, shared, and discovered again.
-        BookSwap helps every story find its next reader.&rdquo;
+        &ldquo;{t.about.quote}&rdquo;
       </motion.p>
 
       <motion.p
@@ -34,7 +35,7 @@ export default function About() {
         className="mt-6 text-sm max-w-md"
         style={{ color: "var(--ink-soft)" }}
       >
-        BookSwap is a simple way for readers to exchange books they&apos;ve finished and discover new ones from other readers. Search the catalog, add books to your library, send and receive swap requests, and chat with your swap partner to arrange the exchange.
+        {t.about.body}
       </motion.p>
 
       <motion.div

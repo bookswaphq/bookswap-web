@@ -3,46 +3,27 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
-
-const faqs = [
-  {
-    q: "Is BookSwap free?",
-    a: "Yes. Browsing books, listing your own, and swapping with other readers is free.",
-  },
-  {
-    q: "How do I get access?",
-    a: "BookSwap is on the App Store — download it for free on your iPhone, sign in, and you can start swapping right away.",
-  },
-  {
-    q: "Which platforms does it run on?",
-    a: "BookSwap is launching on iOS first. We plan to bring it to other platforms in the future.",
-  },
-  {
-    q: "How does a swap actually happen?",
-    a: "Send a swap request for a book you want. Once the swap is accepted, chat with the other reader and arrange a handoff that works for both of you.",
-  },
-  {
-    q: "What data do you collect?",
-    a: (
-      <>
-        We collect the information needed to create your account, manage your
-        library and wishlist, facilitate book swaps, and provide in-app
-        messaging. See our{" "}
-        <a
-          href="/privacy"
-          className="underline"
-          style={{ color: "var(--primary)" }}
-        >
-          Privacy Policy
-        </a>{" "}
-        for details about what data we collect and how we use it.
-      </>
-    ),
-  },
-];
+import { useLocale } from "@/i18n/LocaleContext";
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const { t } = useLocale();
+  const privacy = t.faq.privacy;
+  const faqs: { q: string; a: React.ReactNode }[] = [
+    ...t.faq.items,
+    {
+      q: privacy.q,
+      a: (
+        <>
+          {privacy.before}{" "}
+          <a href="/privacy" className="underline" style={{ color: "var(--primary)" }}>
+            {privacy.link}
+          </a>{" "}
+          {privacy.after}
+        </>
+      ),
+    },
+  ];
 
   return (
     <motion.section
@@ -58,14 +39,14 @@ export default function FAQ() {
         className="font-mono text-xs tracking-[0.2em] uppercase"
         style={{ color: "var(--primary)" }}
       >
-        Questions, Answered
+        {t.faq.eyebrow}
       </motion.span>
 
       <motion.h2
         variants={fadeUp}
         className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]"
       >
-        Before you ask
+        {t.faq.title}
       </motion.h2>
 
       <div className="mt-12 w-full flex flex-col gap-3 text-left">

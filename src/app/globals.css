@@ -160,3 +160,112 @@ body {
     height: auto;
   }
 }
+/* ── Language switch: page curl ────────────────────────────────────────────
+   Set on <html> only while switching language (src/i18n/pageTurn.ts).
+
+   The page peels from its bottom-right corner. One animated length, --peel, is the
+   distance the fold has travelled from that corner; the fold is the 45° line
+   x + y = W + H - peel (W, H = viewport).
+   - The old page is clipped to the part still lying flat (above the fold).
+   - The folded-back flap (the cut-off corner mirrored over the fold) is painted as
+     the back of the paper on `page-shade`, an empty full-screen layer pageTurn.ts
+     adds for the turn, with shading and a shadow.
+   - The new language is underneath and shows through as the corner lifts. */
+@property --peel {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+html.page-turn {
+  --page-turn-duration: 1000ms;
+  --page-turn-ease: cubic-bezier(0.5, 0, 0.35, 1);
+}
+
+html.page-turn::view-transition-image-pair(root) {
+  isolation: auto;
+}
+
+html.page-turn::view-transition-old(root),
+html.page-turn::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+/* Fold geometry, shared by the flat page and the flap. */
+html.page-turn::view-transition-old(root),
+html.page-turn::view-transition-image-pair(page-shade) {
+  --s: calc(100vw + 100vh - var(--peel)); /* the fold: x + y = s */
+  animation: page-peel var(--page-turn-duration) var(--page-turn-ease) both;
+}
+
+/* What is still flat: everything above the fold. */
+html.page-turn::view-transition-old(root) {
+  z-index: 2;
+  clip-path: polygon(
+    0 0,
+    min(100vw, var(--s)) 0,
+    min(100vw, var(--s)) max(0px, 100vh - var(--peel)),
+    max(0px, 100vw - var(--peel)) min(100vh, var(--s)),
+    0 min(100vh, var(--s))
+  );
+}
+
+html.page-turn::view-transition-new(root) {
+  z-index: 1;
+  animation: page-turn-reveal var(--page-turn-duration) var(--page-turn-ease) both;
+}
+
+/* The flap's shadow falls across the fold onto the page being revealed. */
+html.page-turn::view-transition-group(page-shade) {
+  z-index: 3;
+  pointer-events: none;
+  animation: none;
+  filter: drop-shadow(6px 6px 14px rgba(30, 20, 10, 0.32));
+}
+
+/* The flap: the cut-off corner mirrored over the fold, (x, y) → (s - y, s - x).
+   Paper back, darker where it bends at the fold, a soft highlight, a darker tip.
+   On the 315° gradient the fold sits at peel/√2 and the tip at peel·√2. */
+html.page-turn::view-transition-image-pair(page-shade) {
+  clip-path: polygon(
+    var(--s) max(0px, 100vh - var(--peel)),
+    var(--s) calc(100vh - var(--peel)),
+    calc(100vw - var(--peel)) calc(100vh - var(--peel)),
+    calc(100vw - var(--peel)) var(--s),
+    max(0px, 100vw - var(--peel)) var(--s),
+    max(0px, 100vw - var(--peel)) min(100vh, var(--s)),
+    min(100vw, var(--s)) max(0px, 100vh - var(--peel))
+  );
+  background: linear-gradient(
+    315deg,
+    #cfc6b6 calc(var(--peel) * 0.7071),
+    #ebe5da calc(var(--peel) * 0.82),
+    #fbf8f2 calc(var(--peel) * 1.05),
+    #f2ede4 calc(var(--peel) * 1.3),
+    #ddd5c7 calc(var(--peel) * 1.4142)
+  );
+}
+
+/* The shade layer's own snapshot is empty; only the flap matters. */
+html.page-turn::view-transition-old(page-shade) {
+  animation: none;
+  opacity: 0;
+}
+
+@keyframes page-peel {
+  from {
+    --peel: 0px;
+  }
+  to {
+    --peel: calc(100vw + 100vh);
+  }
+}
+
+@keyframes page-turn-reveal {
+  0% {
+    filter: brightness(0.9);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}

@@ -2,25 +2,11 @@
 
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
+import { useLocale } from "@/i18n/LocaleContext";
 
 export default function HowItWorks() {
-  const steps = [
-    {
-      n: "1",
-      title: "List your book",
-      copy: "Search the catalog, find your book, and add it to your library in just a few taps.",
-    },
-    {
-      n: "2",
-      title: "Receive swap offers",
-      copy: "Other readers can request your book and make an offer in return.",
-    },
-    {
-      n: "3",
-      title: "Chat & exchange",
-      copy: "Accept an offer, chat with your swap partner, and arrange the exchange.",
-    },
-  ];
+  const { t } = useLocale();
+  const steps = t.howItWorks.steps.map((step, i) => ({ n: String(i + 1), ...step }));
 
   return (
     <motion.section
@@ -36,14 +22,14 @@ export default function HowItWorks() {
         className="font-mono text-xs tracking-[0.2em] uppercase"
         style={{ color: "var(--primary)" }}
       >
-        How the Story Goes
+        {t.howItWorks.eyebrow}
       </motion.span>
 
       <motion.h2
         variants={fadeUp}
         className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]"
       >
-        Three steps, one new book
+        {t.howItWorks.title}
       </motion.h2>
 
       <div className="mt-14 w-full flex flex-col gap-6">

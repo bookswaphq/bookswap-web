@@ -1,5 +1,8 @@
+"use client";
+
 import { appStoreLink, type AppStoreCampaign } from "@/lib/site";
 import { STORE_BADGE_CLASS } from "./storeBadge";
+import { useLocale } from "@/i18n/LocaleContext";
 
 /** Apple's logo glyph, drawn inline so the button stays crisp at any size. */
 function AppleMark({ size = 18 }: { size?: number }) {
@@ -30,19 +33,20 @@ type Props = {
  * link (siteConfig.appStoreUrl, tagged by appStoreLink()).
  */
 export default function AppStoreButton({ campaign, className = "" }: Props) {
+  const { t } = useLocale();
   return (
     <a
       href={appStoreLink(campaign)}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Download BookSwap on the App Store"
+      aria-label={t.stores.appStore.ariaLabel}
       className={`${STORE_BADGE_CLASS} ${className}`}
     >
       <AppleMark size={30} />
 
       <span className="flex flex-col items-start">
-        <span className="text-[11px] font-normal leading-tight">Download on the</span>
-        <span className="text-[22px] font-semibold leading-none tracking-tight">App Store</span>
+        <span className="text-[11px] font-normal leading-tight">{t.stores.appStore.top}</span>
+        <span className="text-[22px] font-semibold leading-none tracking-tight">{t.stores.appStore.bottom}</span>
       </span>
     </a>
   );

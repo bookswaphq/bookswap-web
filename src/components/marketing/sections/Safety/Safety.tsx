@@ -3,23 +3,10 @@
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
 import { siteConfig } from "@/lib/site";
-
-const tips = [
-  {
-    title: "Chat before you meet",
-    copy: "Once a swap is accepted, chat with your swap partner to agree on the details of your exchange.",
-  },
-  {
-    title: "Meet in public",
-    copy: "Choose a public place for your handoff, such as a café, library, or other familiar spot.",
-  },
-  {
-    title: "Trust your instincts",
-    copy: "You can decline or cancel a swap at any point no explanation needed.",
-  },
-];
+import { useLocale } from "@/i18n/LocaleContext";
 
 export default function Safety() {
+  const { t } = useLocale();
   return (
     <motion.section
       id="safety"
@@ -34,14 +21,14 @@ export default function Safety() {
         className="font-mono text-xs tracking-[0.2em] uppercase"
         style={{ color: "var(--primary)" }}
       >
-        Trust &amp; Safety
+        {t.safety.eyebrow}
       </motion.span>
 
       <motion.h2
         variants={fadeUp}
         className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]"
       >
-        Swapping is easy when it&apos;s safe
+        {t.safety.title}
       </motion.h2>
 
       <motion.p
@@ -49,11 +36,11 @@ export default function Safety() {
         className="mt-4 max-w-md text-sm sm:text-base"
         style={{ color: "var(--ink-soft)" }}
       >
-        BookSwap connects readers who want to exchange books they've finished with books they want to read next.
+        {t.safety.subtitle}
       </motion.p>
 
       <div className="mt-12 w-full flex flex-col gap-4 text-left">
-        {tips.map((tip) => (
+        {t.safety.tips.map((tip) => (
           <motion.div
             key={tip.title}
             variants={fadeUp}
@@ -78,15 +65,16 @@ export default function Safety() {
         className="mt-8 text-xs"
         style={{ color: "var(--ink-muted)" }}
       >
-        Something felt off?{" "}
+        {t.safety.reportBefore}{" "}
         <a
           href={`mailto:${siteConfig.supportEmail}`}
           className="underline underline-offset-2"
           style={{ color: "var(--primary)" }}
         >
-          Tell us
-        </a>{" "}
-        and we&apos;ll look into it.
+          {t.safety.reportLink}
+        </a>
+        {t.safety.reportAfter.startsWith(",") ? "" : " "}
+        {t.safety.reportAfter}
       </motion.p>
     </motion.section>
   );

@@ -1,5 +1,8 @@
+"use client";
+
 import { playStoreLink, type PlayStoreCampaign } from "@/lib/site";
 import { STORE_BADGE_CLASS } from "./storeBadge";
+import { useLocale } from "@/i18n/LocaleContext";
 
 /** The four-colour Play triangle, as on Google Play's own badge. */
 function PlayMark({ size = 28 }: { size?: number }) {
@@ -31,19 +34,22 @@ type Props = {
  * Same shape and size as the App Store badge (storeBadge.ts).
  */
 export default function GooglePlayButton({ campaign, className = "" }: Props) {
+  const { t } = useLocale();
   return (
     <a
       href={playStoreLink(campaign)}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label="Get BookSwap on Google Play"
+      aria-label={t.stores.googlePlay.ariaLabel}
       className={`${STORE_BADGE_CLASS} ${className}`}
     >
       <PlayMark size={26} />
 
       <span className="flex flex-col items-start">
-        <span className="text-[10px] font-medium uppercase leading-tight tracking-wide">Get it on</span>
-        <span className="text-[22px] font-semibold leading-none tracking-tight">Google Play</span>
+        {/* Same style as the App Store badge's top line (sentence case), so the two
+            buttons read as a pair. */}
+        <span className="text-[11px] font-normal leading-tight">{t.stores.googlePlay.top}</span>
+        <span className="text-[22px] font-semibold leading-none tracking-tight">{t.stores.googlePlay.bottom}</span>
       </span>
     </a>
   );

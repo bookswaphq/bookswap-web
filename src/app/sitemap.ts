@@ -3,6 +3,8 @@ import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
+  // English and Turkish home pages list each other (hreflang in the sitemap).
+  const homeLanguages = { en: siteConfig.url, tr: `${siteConfig.url}/tr` };
 
   // /engineering is marked noindex (portfolio/case-study page, not
   // meant to compete with the main site in search) so it's left out here.
@@ -12,6 +14,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "weekly",
       priority: 1,
+      alternates: { languages: homeLanguages },
+    },
+    {
+      url: `${siteConfig.url}/tr`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 1,
+      alternates: { languages: homeLanguages },
     },
     {
       url: `${siteConfig.url}/support`,

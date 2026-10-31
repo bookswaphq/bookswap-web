@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
 import AppStoreButton from "@/components/marketing/AppStoreButton";
 import GooglePlayButton from "@/components/marketing/GooglePlayButton";
+import { useLocale } from "@/i18n/LocaleContext";
 
 export default function Download() {
+  const { t } = useLocale();
   return (
     <motion.section
       id="download"
@@ -20,14 +22,14 @@ export default function Download() {
         className="font-mono text-xs tracking-[0.2em] uppercase"
         style={{ color: "var(--primary)" }}
       >
-        Out now
+        {t.download.eyebrow}
       </motion.span>
 
       <motion.h2
         variants={fadeUp}
         className="font-display mt-4 text-3xl sm:text-4xl font-medium text-[var(--ink)]"
       >
-        Keep stories moving
+        {t.download.title}
       </motion.h2>
 
       <motion.p
@@ -35,8 +37,7 @@ export default function Download() {
         className="mt-3 text-sm max-w-sm"
         style={{ color: "var(--ink-soft)" }}
       >
-        BookSwap is now available on the App Store and Google Play. Download it,
-        add the books you&apos;ve finished, and start swapping with readers near you.
+        {t.download.body}
       </motion.p>
 
       <motion.div
@@ -52,7 +53,7 @@ export default function Download() {
         className="font-mono text-[11px] tracking-[0.18em] uppercase mt-5"
         style={{ color: "var(--ink-muted)" }}
       >
-        Free · iPhone · Android
+        {t.download.platforms}
       </motion.p>
     </motion.section>
   );
