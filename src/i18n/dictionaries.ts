@@ -14,10 +14,10 @@ export const HOME_PATH: Record<Locale, string> = { en: "/", tr: "/tr" };
 
 const en = {
   meta: {
-    // Same as the site-wide default in app/layout.tsx; the English page keeps it.
-    title: "BookSwap — Discover, exchange, and keep stories moving",
+    // Leads with what people search for ("book swap app"), like the Turkish title.
+    title: "BookSwap — Book swap app | Swap books with readers near you",
     description:
-      "BookSwap helps readers discover books from real shelves nearby, offer the ones they've finished, and exchange stories with other readers.",
+      "BookSwap is a free book swap app for iPhone and Android. Swap the books you've finished with readers near you and discover your next read from real shelves nearby.",
   },
   nav: {
     links: {
@@ -32,7 +32,7 @@ const en = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     /** The link to the other language. */
-    switchLanguage: { label: "TR", ariaLabel: "Türkçe" },
+    switchLanguage: { ariaLabel: "Türkçe" },
   },
   stores: {
     appStore: { top: "Download on the", bottom: "App Store", ariaLabel: "Download BookSwap on the App Store" },
@@ -193,7 +193,7 @@ const tr: Dictionary = {
     backToTop: "BookSwap — sayfanın başına dön",
     openMenu: "Menüyü aç",
     closeMenu: "Menüyü kapat",
-    switchLanguage: { label: "EN", ariaLabel: "English" },
+    switchLanguage: { ariaLabel: "English" },
   },
   stores: {
     appStore: { top: "Hemen indir", bottom: "App Store", ariaLabel: "BookSwap'ı App Store'dan indir" },

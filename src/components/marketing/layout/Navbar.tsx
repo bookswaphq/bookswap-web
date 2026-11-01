@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ChevronDown, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 import { useLocale } from "@/i18n/LocaleContext";
 import { HOME_PATH } from "@/i18n/dictionaries";
@@ -151,8 +151,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2 lg:ml-1 xl:ml-2">
             {/* Language switch as a satin bookmark ribbon, attached to the top of the page:
                 it runs down over the bar and hangs out below it. The label sits on the
-                bar's centre line, level with the links; the chevron says it's a language
-                switch. The slot keeps the row's height; the ribbon is positioned over it.
+                bar's centre line, level with the links. The slot keeps the row's height; the ribbon is positioned over it.
                 The bar is 16px (sm: 20px) from the top, plus 1px border and 12px padding,
                 so the slot starts 29px (sm: 33px) down; the ribbon ends 26px below the
                 slot (13px below the bar). */}
@@ -166,8 +165,8 @@ export default function Navbar() {
                 title={t.nav.switchLanguage.ariaLabel}
                 className="absolute left-0 top-[-29px] sm:top-[-33px] block h-[95px] sm:h-[99px] w-[34px]
                   drop-shadow-[0_2px_2.5px_rgba(70,20,10,0.32)]
-                  transition-transform duration-300 ease-out
-                  hover:translate-y-[2px] active:translate-y-[4px]
+                  group transition-[filter] duration-200 ease-out
+                  hover:brightness-110 active:brightness-95
                   focus-visible:outline-none focus-visible:[&>span]:outline focus-visible:[&>span]:outline-2
                   focus-visible:[&>span]:outline-offset-2 focus-visible:[&>span]:outline-[#7F3DFF]
                   motion-reduce:transition-none"
@@ -185,22 +184,37 @@ export default function Navbar() {
                     ].join(", "),
                   }}
                 >
-                  {/* Measured from the ribbon's end: label centred 46px up (= the slot's
-                      centre), chevron under it. */}
+                  {/* Both languages, EN above TR. The current one is bright and sits on the
+                      bar's centre line (46px up from the ribbon's end = the slot's centre),
+                      level with the links and the same size; the other is smaller and
+                      dimmed, 16px above or below it.
+                      A tap switches straight away; there is no menu. */}
                   <span
-                    className="absolute inset-x-0 bottom-[46px] translate-y-1/2 text-center
-                      text-[13px] font-semibold leading-none tracking-[0.02em] text-white"
+                    aria-hidden="true"
+                    className="absolute inset-0 font-semibold leading-none tracking-[0.03em]"
                     style={{ textShadow: "0 1px 1px rgba(60,10,5,0.45)" }}
                   >
-                    {t.nav.switchLanguage.label}
+                    {(["en", "tr"] as const).map((code, index) => {
+                      const current = code === locale;
+                      const currentIndex = locale === "en" ? 0 : 1;
+                      const bottom = 46 - (index - currentIndex) * 16;
+                      return (
+                        <span
+                          key={code}
+                          lang={code}
+                          className={`absolute inset-x-0 translate-y-1/2 text-center ${
+                            current
+                              ? "text-sm text-white" // same size as the links
+                              : // On hover the other language lights up: that's where a tap goes.
+                                "text-[11px] text-white/50 transition-colors duration-200 group-hover:text-white/90"
+                          }`}
+                          style={{ bottom }}
+                        >
+                          {code.toUpperCase()}
+                        </span>
+                      );
+                    })}
                   </span>
-                  <ChevronDown
-                    aria-hidden="true"
-                    size={13}
-                    strokeWidth={2.5}
-                    className="absolute left-1/2 bottom-[25px] -translate-x-1/2 text-white/90"
-                    style={{ filter: "drop-shadow(0 1px 1px rgba(60,10,5,0.4))" }}
-                  />
                 </span>
               </Link>
             </span>
