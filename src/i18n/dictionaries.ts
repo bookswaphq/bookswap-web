@@ -146,6 +146,14 @@ const en = {
         q: "How does a swap actually happen?",
         a: "Send a swap request for a book you want. Once the swap is accepted, chat with the other reader and arrange a handoff that works for both of you.",
       },
+      {
+        q: "Can I exchange books with readers in other countries?",
+        a: "Yes. BookSwap isn't limited to your city: you can discover books, send swap offers and chat with readers in other countries too. Shipping, costs and delivery are arranged directly between you and the other reader through chat, so it's a good idea to agree on these details before confirming a swap.",
+      },
+      {
+        q: "Can I donate or gift books on BookSwap?",
+        a: "BookSwap is built around book exchanges, so there's no dedicated gifting or donation feature yet. We're always listening to our community, so feel free to share your ideas with us!",
+      },
     ],
     privacy: {
       q: "What data do you collect?",
@@ -309,6 +317,14 @@ const tr: Dictionary = {
       {
         q: "Takas nasıl gerçekleşiyor?",
         a: "İstediğin kitap için takas teklifi gönder. Teklif kabul edilince diğer okurla sohbet et ve ikinize de uyan bir buluşma ayarla.",
+      },
+      {
+        q: "Başka ülkelerdeki okurlarla kitap takas edebilir miyim?",
+        a: "Evet. BookSwap yalnızca bulunduğun şehirle sınırlı değil: başka ülkelerdeki okurların kitaplarını keşfedebilir, onlara takas teklifi gönderebilir ve sohbet edebilirsin. Kargo, masraflar ve teslimat doğrudan sen ve diğer okur arasında sohbet üzerinden ayarlanır; bu yüzden takası onaylamadan önce bu detaylarda anlaşmanı öneririz.",
+      },
+      {
+        q: "BookSwap'ta kitap bağışlayabilir ya da hediye edebilir miyim?",
+        a: "BookSwap kitap takası üzerine kurulu; bu yüzden şu an hediye ya da bağış için ayrı bir özellik yok. Topluluğumuzu her zaman dinliyoruz, fikirlerini bizimle paylaşmaktan çekinme!",
       },
     ],
     privacy: {
