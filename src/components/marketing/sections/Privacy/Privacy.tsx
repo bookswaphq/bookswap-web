@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, viewport } from "@/lib/motion";
 import { siteConfig } from "@/lib/site";
 
-const effectiveDate = "October 13, 2026";
+const effectiveDate = "November 2, 2026";
 
 type Block =
   | { type: "text"; text: string }
@@ -28,7 +28,10 @@ const sections: Section[] = [
       {
         type: "list",
         items: [
-          "Phone number",
+          "Phone number, if you sign in with your phone number",
+          "If you sign in with Google or Apple: the account identifier Google or Apple gives us, and the name on that account (used to pre-fill your display name)",
+          "If you sign in with Google or Apple, the email address of that account (if you use Apple's Hide My Email, a relay address). We use it to identify your account, for support and for deletion requests, and we do not send marketing emails without your separate consent.",
+          "How you signed in (phone number, Google or Apple)",
           "Display name or username",
           "Profile photo",
           "Account identifier",
@@ -200,7 +203,9 @@ const sections: Section[] = [
       {
         type: "list",
         items: [
-          "Google Firebase Authentication - phone number sign-in",
+          "Google Firebase Authentication - sign-in with your phone number, Google or Apple account",
+          "Google Sign-In - signing in with your Google account",
+          "Sign in with Apple - signing in with your Apple Account",
           "Google Firebase Firestore - real-time messaging",
           "Google Firebase Crashlytics - crash and diagnostic reporting, which may be linked to your account identifier",
           "Google reCAPTCHA Enterprise - protecting sign-in from automated abuse",
@@ -252,6 +257,10 @@ const sections: Section[] = [
       {
         type: "text",
         text: "Your swap location is deleted as soon as you remove it in the app or delete your account.",
+      },
+      {
+        type: "text",
+        text: "To keep usage limits from being reset by deleting and re-creating an account, when your account is deleted we keep a one-way, keyed fingerprint of your phone number (or of your Google or Apple account identifier), together with counts of your recent actions, for at most 31 days. The fingerprint cannot be turned back into your phone number or account identifier.",
       },
     ],
   },
@@ -310,7 +319,11 @@ const sections: Section[] = [
       },
       {
         type: "text",
-        text: "Deleting your account removes your profile photo, phone number, swap location and other profile details, clears your library and wishlist, cancels any pending swap offers, and removes your personal information from everything other users can see, as described in Section 7. Messages you sent remain in the other participant's conversation, shown as coming from a deleted user with no name or photo. This action cannot be undone.",
+        text: "Deleting your account removes your profile photo, phone number or Google/Apple account identifier and email, swap location and other profile details, clears your library and wishlist, cancels any pending swap offers, and removes your personal information from everything other users can see, as described in Section 7. Messages you sent remain in the other participant's conversation, shown as coming from a deleted user with no name or photo. This action cannot be undone.",
+      },
+      {
+        type: "text",
+        text: "If you signed in with Apple, you are asked to confirm with Apple once more, and BookSwap's access to your Apple Account is revoked.",
       },
       {
         type: "text",
