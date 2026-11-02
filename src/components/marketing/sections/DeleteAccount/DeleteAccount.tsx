@@ -15,7 +15,7 @@ import { siteConfig } from "@/lib/site";
 const processingDays = 30;
 
 const deleted = [
-  "Your profile: name, phone number, profile photo, bio and other details",
+  "Your profile: name, phone number or Google/Apple sign-in, profile photo, bio and other details",
   "Your library and wishlist",
   "All swap offers you sent or received",
   "Your push-notification and device registrations",
@@ -27,7 +27,7 @@ const retained = [
 
 const subject = encodeURIComponent("Account deletion request");
 const body = encodeURIComponent(
-  "Please delete my BookSwap account.\n\nRegistered phone number: +",
+  "Please delete my BookSwap account.\n\nRegistered phone number (if I signed up with my phone number): +",
 );
 const mailto = `mailto:${siteConfig.supportEmail}?subject=${subject}&body=${body}`;
 
@@ -81,9 +81,26 @@ export default function DeleteAccount() {
             2. By request (no app needed)
           </h2>
           <p className={`mt-3 ${paragraph}`} style={muted}>
-            If you no longer have the app installed, email us from any address
-            and include the phone number your account is registered with.
+            If you no longer have the app installed, email us:
           </p>
+          <ul
+            className={`mt-3 list-disc pl-5 flex flex-col gap-1.5 ${paragraph}`}
+            style={muted}
+          >
+            <li>
+              Signed up with a <strong>phone number</strong>: email us from any
+              address and include that number.
+            </li>
+            <li>
+              Signed up with <strong>Google</strong>: email us from the address
+              of that Google account.
+            </li>
+            <li>
+              Signed up with <strong>Apple</strong>: delete your account in the
+              app (reinstall it from the App Store if needed). If you can&apos;t,
+              email us and we&apos;ll help.
+            </li>
+          </ul>
           <p className={`mt-3 ${paragraph}`} style={muted}>
             <a
               href={mailto}
@@ -95,7 +112,8 @@ export default function DeleteAccount() {
           </p>
           <p className={`mt-3 ${paragraph}`} style={muted}>
             To make sure the request really comes from you, we may ask you to
-            confirm it from that phone number. Once verified, we delete the
+            confirm it from that phone number, or by replying to our email at
+            your Google account&apos;s address. Once verified, we delete the
             account within <strong>{processingDays} days</strong> and confirm
             by email.
           </p>
