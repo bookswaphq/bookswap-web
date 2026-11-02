@@ -62,14 +62,24 @@ export const metadata: Metadata = {
   },
 };
 
-const jsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: siteConfig.name,
-  url: siteConfig.url,
-  description: siteConfig.description,
-  logo: `${siteConfig.url}/icon`,
-};
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: siteConfig.name,
+    url: siteConfig.url,
+    description: siteConfig.description,
+    logo: `${siteConfig.url}/icon`,
+  },
+  // Tells Google which site name to show above search results instead of the domain.
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: siteConfig.name,
+    alternateName: ["BookSwap App", "bookswapapp.com"],
+    url: `${siteConfig.url}/`,
+  },
+];
 
 export default function RootLayout({
   children,
