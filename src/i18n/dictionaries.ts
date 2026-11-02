@@ -15,7 +15,7 @@ export const HOME_PATH: Record<Locale, string> = { en: "/", tr: "/tr" };
 const en = {
   meta: {
     // Leads with what people search for ("book swap app"), like the Turkish title.
-    title: "BookSwap — Book swap app for readers near you",
+    title: "BookSwap - Book swap app for readers near you",
     description:
       "BookSwap is a free book swap app for iPhone and Android. Swap the books you've finished with readers near you and find your next read.",
   },
@@ -185,7 +185,7 @@ export type Dictionary = typeof en;
 
 const tr: Dictionary = {
   meta: {
-    title: "BookSwap — Okurlarla ücretsiz kitap takas uygulaması",
+    title: "BookSwap - Okurlarla ücretsiz kitap takas uygulaması",
     description:
       "BookSwap ile okuduğun kitapları yakınındaki okurlarla takas et, yeni kitaplar keşfet. iPhone ve Android için ücretsiz kitap takas uygulaması.",
   },
