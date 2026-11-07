@@ -7,5 +7,5 @@ export const STORE_BADGE_CLASS =
   "whitespace-nowrap rounded-xl border border-[#A6A6A6] bg-black px-4 text-white " +
   "transition-[background-color,transform] duration-200 " +
   "hover:bg-[#1A1A1A] active:scale-[0.98] " +
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7F3DFF] " +
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8842B8] " +
   "focus-visible:ring-offset-4 motion-reduce:transition-none";

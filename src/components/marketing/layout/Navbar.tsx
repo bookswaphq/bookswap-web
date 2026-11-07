@@ -22,6 +22,10 @@ export default function Navbar() {
   const router = useRouter();
 
   // Language switch turns the page like a book; falls back to a plain link.
+  // Running page number, like a book's header: 01 on the hero, then one per section.
+  const pageIndex = activeSection ? sectionIds.indexOf(activeSection as (typeof sectionIds)[number]) + 2 : 1;
+  const pageNumber = String(Math.max(1, pageIndex)).padStart(2, "0");
+
   const switchLanguage = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (event.metaKey || event.ctrlKey || event.shiftKey || event.button !== 0) return;
     const href = HOME_PATH[otherLocale];
@@ -35,7 +39,8 @@ export default function Navbar() {
   const sectionHref = (id: string) => `${homePath}#${id}`;
 
   useEffect(() => {
-    const sections = sectionIds
+    // The hero is watched too, so scrolling back up resets the page number to 01.
+    const sections = ["hero", ...sectionIds]
       .map((id) => document.getElementById(id))
       .filter(Boolean);
 
@@ -76,20 +81,15 @@ export default function Navbar() {
   }, []);
 
   return (
-    <header className="fixed top-4 sm:top-5 z-50 w-full flex justify-center px-4">
-      <nav
-        className="w-full max-w-3xl rounded-3xl lg:rounded-full backdrop-blur-xl transition-[background-color,box-shadow] duration-300"
-        style={{
-          background: scrolled
-            ? "rgba(255,255,255,0.92)"
-            : "rgba(255,255,255,0.78)",
-          border: "1px solid var(--border)",
-          boxShadow: scrolled
-            ? "0 18px 40px -26px var(--shadow-color)"
-            : "0 10px 30px -20px var(--shadow-color)",
-        }}
-      >
-        <div className="flex items-center justify-between gap-4 px-5 sm:px-6 py-3">
+    <header
+      className="fixed inset-x-0 top-0 z-50 transition-[background-color,backdrop-filter] duration-300"
+      style={{
+        background: scrolled || menuOpen ? "rgba(248,245,241,0.94)" : "transparent",
+        backdropFilter: scrolled || menuOpen ? "blur(10px)" : "none",
+      }}
+    >
+      <nav className="mx-auto w-full max-w-6xl px-5 sm:px-6">
+        <div className="flex items-center justify-between gap-6 pt-5 pb-3 sm:pt-6">
           <Link
             href={homePath}
             onClick={backToHero}
@@ -112,145 +112,99 @@ export default function Navbar() {
               width={1015}
               height={223}
               priority
-              // Narrow phones (< 380px): the icon alone, so the language ribbon,
-              // the download button and the menu button still fit on one row.
+              // Narrow phones (< 380px): the icon alone, so the language switch
+              // and the menu button still fit on one row.
               className="h-[19px] sm:h-[21px] w-auto object-contain max-[379px]:hidden"
             />
           </Link>
 
-          <div className="hidden lg:flex ml-auto items-center gap-5 xl:gap-6 text-sm">
-            {links.map((link) => {
-              const active = activeSection === link.id;
+          <div className="flex items-center gap-5 xl:gap-7">
+            <div className="hidden lg:flex items-center gap-6 xl:gap-7 text-[15px]">
+              {links.map((link) => {
+                const active = activeSection === link.id;
 
-              return (
-                <a
-                  key={link.id}
-                  href={sectionHref(link.id)}
-                  className="whitespace-nowrap transition-colors duration-200"
-                  style={{
-                    color: active ? "var(--primary)" : "var(--ink-soft)",
-                    fontWeight: active ? 600 : 400,
-                  }}
-                >
-                  {link.label}
-                </a>
-              );
-            })}
-
-            <Link
-              href="/support"
-              className="whitespace-nowrap transition-colors duration-200"
-              style={{ color: "var(--ink-soft)" }}
-            >
-              {t.nav.support}
-            </Link>
-          </div>
-
-          {/* lg:ml-1 / xl:ml-2 on top of the row's 16px gap: the ribbon sits the same
-              distance from "Support" as the links are from each other (20px / 24px). */}
-          <div className="flex items-center gap-2 lg:ml-1 xl:ml-2">
-            {/* Language switch as a satin bookmark ribbon, attached to the top of the page:
-                it runs down over the bar and hangs out below it. The label sits on the
-                bar's centre line, level with the links. The slot keeps the row's height; the ribbon is positioned over it.
-                The bar is 16px (sm: 20px) from the top, plus 1px border and 12px padding,
-                so the slot starts 29px (sm: 33px) down; the ribbon ends 26px below the
-                slot (13px below the bar). */}
-            <span className="relative h-10 w-[34px] shrink-0">
-              <Link
-                href={HOME_PATH[otherLocale]}
-                onClick={switchLanguage}
-                hrefLang={otherLocale}
-                lang={otherLocale}
-                aria-label={t.nav.switchLanguage.ariaLabel}
-                title={t.nav.switchLanguage.ariaLabel}
-                className="absolute left-0 top-[-29px] sm:top-[-33px] block h-[95px] sm:h-[99px] w-[34px]
-                  drop-shadow-[0_2px_2.5px_rgba(70,20,10,0.32)]
-                  group transition-[filter] duration-200 ease-out
-                  hover:brightness-110 active:brightness-95
-                  focus-visible:outline-none focus-visible:[&>span]:outline focus-visible:[&>span]:outline-2
-                  focus-visible:[&>span]:outline-offset-2 focus-visible:[&>span]:outline-[#7F3DFF]
-                  motion-reduce:transition-none"
-              >
-                <span
-                  className="relative block h-full w-full"
-                  style={{
-                    clipPath: "polygon(0 0, 100% 0, 100% 100%, 50% calc(100% - 12px), 0 100%)",
-                    // Top to bottom: shade where it comes in from the page edge; darker
-                    // selvage edges with a light line just inside them; brick-red satin.
-                    background: [
-                      "linear-gradient(180deg, rgba(40,8,4,0.3) 0, transparent 10px)",
-                      "linear-gradient(90deg, rgba(50,10,5,0.38) 0, rgba(255,220,210,0.16) 1.5px, transparent 3.5px, transparent calc(100% - 3.5px), rgba(255,220,210,0.16) calc(100% - 1.5px), rgba(50,10,5,0.38) 100%)",
-                      "linear-gradient(90deg, #86301F 0%, #9E3B2C 30%, #A9463A 50%, #9A392A 70%, #842E20 100%)",
-                    ].join(", "),
-                  }}
-                >
-                  {/* Both languages, EN above TR. The current one is bright and sits on the
-                      bar's centre line (46px up from the ribbon's end = the slot's centre),
-                      level with the links and the same size; the other is smaller and
-                      dimmed, 16px above or below it.
-                      A tap switches straight away; there is no menu. */}
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 font-semibold leading-none tracking-[0.03em]"
-                    style={{ textShadow: "0 1px 1px rgba(60,10,5,0.45)" }}
+                return (
+                  <a
+                    key={link.id}
+                    href={sectionHref(link.id)}
+                    aria-current={active ? "location" : undefined}
+                    className="whitespace-nowrap transition-colors duration-200 hover:text-[var(--primary)]"
+                    style={{ color: active ? "var(--primary)" : "var(--ink)" }}
                   >
-                    {(["en", "tr"] as const).map((code, index) => {
-                      const current = code === locale;
-                      const currentIndex = locale === "en" ? 0 : 1;
-                      const bottom = 46 - (index - currentIndex) * 16;
-                      return (
-                        <span
-                          key={code}
-                          lang={code}
-                          className={`absolute inset-x-0 translate-y-1/2 text-center ${
-                            current
-                              ? "text-sm text-white" // same size as the links
-                              : // On hover the other language lights up: that's where a tap goes.
-                                "text-[11px] text-white/50 transition-colors duration-200 group-hover:text-white/90"
-                          }`}
-                          style={{ bottom }}
-                        >
-                          {code.toUpperCase()}
-                        </span>
-                      );
-                    })}
+                    {link.label}
+                  </a>
+                );
+              })}
+
+              <Link
+                href="/support"
+                className="whitespace-nowrap text-[var(--ink)] transition-colors duration-200 hover:text-[var(--primary)]"
+              >
+                {t.nav.support}
+              </Link>
+            </div>
+
+            <span aria-hidden="true" className="hidden lg:block h-6 w-px bg-[var(--ink)]/70" />
+
+            {/* Language switch: both codes in the book serif, the current one in brand
+                colour. A tap goes straight to the other language (with the page-turn). */}
+            <Link
+              href={HOME_PATH[otherLocale]}
+              onClick={switchLanguage}
+              hrefLang={otherLocale}
+              lang={otherLocale}
+              aria-label={t.nav.switchLanguage.ariaLabel}
+              title={t.nav.switchLanguage.ariaLabel}
+              className="group font-display inline-flex items-center gap-1.5 rounded-sm text-[17px]
+                focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)] focus-visible:ring-offset-4"
+            >
+              {(["en", "tr"] as const).map((code, index) => (
+                <span key={code} className="inline-flex items-center gap-1.5" aria-hidden="true">
+                  {index > 0 ? <span className="text-[var(--ink)]">/</span> : null}
+                  <span
+                    lang={code}
+                    className={
+                      code === locale
+                        ? "text-[var(--primary)]"
+                        : "text-[var(--ink)] transition-colors duration-200 group-hover:text-[var(--primary)]"
+                    }
+                  >
+                    {code.toUpperCase()}
                   </span>
                 </span>
-              </Link>
-            </span>
+              ))}
+            </Link>
 
             <button
               type="button"
               onClick={() => setMenuOpen((open) => !open)}
               aria-expanded={menuOpen}
               aria-label={menuOpen ? t.nav.closeMenu : t.nav.openMenu}
-              className="lg:hidden grid place-items-center w-9 h-9 rounded-full transition-colors"
-              style={{
-                color: "var(--ink-soft)",
-                border: "1px solid var(--border)",
-              }}
+              className="lg:hidden grid place-items-center w-9 h-9 -mr-1.5 text-[var(--ink)]"
             >
-              {menuOpen ? <X size={16} /> : <Menu size={16} />}
+              {menuOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
             </button>
           </div>
         </div>
 
+        {/* The running head's rule, ending in the page number. */}
+        <div aria-hidden="true" className="flex items-center gap-4">
+          <span className="h-px flex-1 bg-[var(--ink)]/45" />
+          <span className="font-display italic text-[15px] leading-none text-[var(--ink-soft)] tabular-nums translate-y-[1px]">
+            {pageNumber}
+          </span>
+        </div>
+
         {menuOpen ? (
-          <div
-            className="lg:hidden px-5 pb-4 pt-1 flex flex-col gap-3 text-sm"
-            style={{ borderTop: "1px solid var(--border)" }}
-          >
+          <div className="lg:hidden flex flex-col gap-1 pt-3 pb-5 text-base">
             {links.map((link) => (
               <a
                 key={link.id}
                 href={sectionHref(link.id)}
                 onClick={() => setMenuOpen(false)}
-                className="py-1"
+                className="py-1.5"
                 style={{
-                  color:
-                    activeSection === link.id
-                      ? "var(--primary)"
-                      : "var(--ink-soft)",
+                  color: activeSection === link.id ? "var(--primary)" : "var(--ink)",
                 }}
               >
                 {link.label}
@@ -260,8 +214,7 @@ export default function Navbar() {
             <Link
               href="/support"
               onClick={() => setMenuOpen(false)}
-              className="py-1"
-              style={{ color: "var(--ink-soft)" }}
+              className="py-1.5 text-[var(--ink)]"
             >
               {t.nav.support}
             </Link>

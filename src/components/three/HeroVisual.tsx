@@ -26,7 +26,12 @@ function supportsWebGL() {
  * visitors and browsers without WebGL get the flat version and never download
  * three.js.
  */
-export default function HeroVisual() {
+export default function HeroVisual({
+  className = "relative w-full h-[150px] sm:h-[192px] md:h-[236px] lg:h-[272px]",
+}: {
+  /** Size of the illustration slot; the scene fits itself to whatever box it gets. */
+  className?: string;
+}) {
   const [use3D, setUse3D] = useState(false);
 
   useEffect(() => {
@@ -47,7 +52,7 @@ export default function HeroVisual() {
   }, []);
 
   return (
-    <div className="relative w-full h-[150px] sm:h-[192px] md:h-[236px] lg:h-[272px]">
+    <div className={className}>
       {use3D ? <BookSwapScene /> : <BookSwapStatic />}
     </div>
   );

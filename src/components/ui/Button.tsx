@@ -11,7 +11,7 @@ export default function Button({
 }: ButtonProps) {
   const styles =
     variant === "primary"
-      ? "bg-purple-600 text-white hover:bg-purple-700"
+      ? "bg-[var(--primary)] text-white hover:bg-[var(--primary-dark)]"
       : "border border-gray-200 text-gray-900 hover:bg-gray-50";
 
   return (

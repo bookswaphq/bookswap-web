@@ -8,7 +8,10 @@ const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
   style: ["normal", "italic"],
-  weight: ["400", "500", "600"],
+  // Variable weight plus the display axes: optical size (high-contrast at
+  // headline sizes), softness and "wonk" (the calligraphic italic forms).
+  weight: "variable",
+  axes: ["opsz", "SOFT", "WONK"],
   display: "swap",
 });
 

@@ -48,7 +48,7 @@ export const PALETTE = {
   brass: "#8C7A55",
 
   /** Shared. */
-  brand: "#7F3DFF",
+  brand: "#8842B8",
   ink: "#2A2130",
   cream: "#EFE6D6",
   paper: "#F6EFE1",

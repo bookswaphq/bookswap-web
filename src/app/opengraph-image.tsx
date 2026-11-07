@@ -24,7 +24,7 @@ export default function OpengraphImage() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "#FCFBF8",
+          background: "#F8F5F1",
           position: "relative",
         }}
       >
@@ -35,7 +35,7 @@ export default function OpengraphImage() {
             width: 420,
             height: 420,
             borderRadius: "50%",
-            background: "#EEE4FF",
+            background: "#F0E5F8",
             top: -140,
             right: -100,
           }}
@@ -47,7 +47,7 @@ export default function OpengraphImage() {
             width: 320,
             height: 320,
             borderRadius: "50%",
-            background: "#F5F0FF",
+            background: "#F6EFFB",
             bottom: -120,
             left: -80,
           }}

@@ -2,21 +2,22 @@
 
 :root {
   /* Foundation */
-  --paper: #FCFBF8;
-  --paper-card: #FFFFFF;
+  /* Palette mirrors the app's design tokens (book-swap src/gluestack/tokens.ts). */
+  --paper: #F8F5F1;
+  --paper-card: #FFFDF9;
 
   /* Typography */
-  --ink: #1B1720;
-  --ink-soft: #6B6673;
-  --ink-muted: #9A95A3;
+  --ink: #111113;
+  --ink-soft: #636366;
+  --ink-muted: #8E8E93;
 
   /* BookSwap Brand (same as mobile app) */
-  --primary: #7F3DFF;
-  --primary-dark: #6E2EE6;
+  --primary: #8842B8;
+  --primary-dark: #6C39A8;
 
   /* Supporting brand surfaces */
-  --primary-soft: #F5F0FF;
-  --primary-surface: #EEE4FF;
+  --primary-soft: #F6EFFB;
+  --primary-surface: #F0E5F8;
 
   /* Community / success */
   --success: #3F6B57;
@@ -27,7 +28,7 @@
   --error-soft: #FFF1F2;
 
   /* Borders */
-  --border: #E8E5EC;
+  --border: #E9E4DE;
 
   /* Shadows */
   --shadow-color: rgba(27, 23, 32, 0.08);
